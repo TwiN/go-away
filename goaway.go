@@ -1,7 +1,6 @@
 package goaway
 
 import (
-	"regexp"
 	"strings"
 )
 
@@ -14,9 +13,7 @@ var profanities = []string{"anal","anus","arse","ass","ballsack","balls","bastar
 func IsProfane(s string) bool {
 	s = strings.Replace(sanitize(s), " ", "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
-		wordPattern := `\b` + word + `\b`
-		match, _ := regexp.MatchString(wordPattern, s)
-
+		match := strings.Contains(s, word)
 		if match {
 			return true
 		}
