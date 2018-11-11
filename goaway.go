@@ -1,44 +1,17 @@
 package goaway
 
 import (
-	"log"
-	"io/ioutil"
 	"regexp"
 	"strings"
 )
 
-var profanities []string
-var initialized bool
-
-func Initialize(finished chan bool) {
-	if initialized {
-		finished <- true
-		return // already initialized
-	}
-	log.Println("[Initialize] Initializing go-away")
-	b, err := ioutil.ReadFile("profanities.txt")
-	if err != nil {
-		log.Fatalln("[Initialize] Error reading profanities file:", err.Error())
-	}
-
-	for _, profanity := range strings.Split(string(b), "\n") {
-		profanities = append(profanities, profanity)
-	}
-	initialized = true
-	finished <- true
-}
+var profanities = []string{"anal","anus","arse","ass","ballsack","balls","bastard","bitch","biatch","bloody","blowjob","bollock","bollok","boner","boob","bugger","bum","butt","clitoris","cock","coon","crap","cunt","dick","dildo","dyke","fag","feck","fellate","fellatio","felching","fuck","fudgepacker","flange","hell","homo","jerk","jizz","labia","muff","naked","nigger","nigga","nude","penis","piss","poop","porn","prick","pube","pussy","queer","scrotum","sex","shit","slut","spunk","suckmy","tit","tosser","turd","twat","vagina","wank","whore"}
 
 /**
  * Takes in a string (word or sentence) and look for profanities.
  * Returns a boolean
  */
 func IsProfane(s string) bool {
-	if !initialized {
-		log.Println("You must call goaway.Initialize() first")
-		finished := make(chan bool)
-		go Initialize(finished)
-		<- finished
-	}
 	s = strings.Replace(sanitize(s), " ", "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
 		wordPattern := `\b` + word + `\b`
