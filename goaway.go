@@ -33,7 +33,6 @@ func Initialize() {
 func IsProfane(s string) bool {
 	if !initialized {
 		log.Println("You must call goaway.Initialize() first")
-		return
 	}
 	s = strings.Replace(sanitize(s), " ", "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
