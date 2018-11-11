@@ -2,8 +2,7 @@ package goaway
 
 import (
 	"log"
-	"os"
-	"bufio"
+	"io/ioutil"
 	"regexp"
 	"strings"
 )
@@ -13,16 +12,14 @@ var initialized bool
 
 func Initialize() {
 	log.Println("[Initialize] Initializing go-away")
-	inFile, err := os.Open("profanities.txt")
-	defer inFile.Close()
+	b, err := ioutil.ReadFile("profanities.txt")
 	if err != nil {
 		log.Fatalln("[Initialize] Error reading profanities file:", err.Error())
-		os.Exit(1)
 	}
-	scanner := bufio.NewScanner(inFile)
-	scanner.Split(bufio.ScanLines)
-	for scanner.Scan() {
-		profanities = append(profanities, scanner.Text())
+
+	for _, profanity := range strings.Split(string(b), "\n") {
+		log.Println(profanity)
+		profanities = append(profanities, profanity)
 	}
 	initialized = true
 }
