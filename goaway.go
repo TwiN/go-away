@@ -11,6 +11,9 @@ var profanities []string
 var initialized bool
 
 func Initialize() {
+	if initialized {
+		return // already initialized
+	}
 	log.Println("[Initialize] Initializing go-away")
 	b, err := ioutil.ReadFile("profanities.txt")
 	if err != nil {
@@ -18,7 +21,6 @@ func Initialize() {
 	}
 
 	for _, profanity := range strings.Split(string(b), "\n") {
-		log.Println(profanity)
 		profanities = append(profanities, profanity)
 	}
 	initialized = true
@@ -31,6 +33,7 @@ func Initialize() {
 func IsProfane(s string) bool {
 	if !initialized {
 		log.Println("You must call goaway.Initialize() first")
+		return
 	}
 	s = strings.Replace(sanitize(s), " ", "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
