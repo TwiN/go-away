@@ -10,8 +10,9 @@ import (
 var profanities []string
 var initialized bool
 
-func Initialize() {
+func Initialize(finished chan bool) {
 	if initialized {
+		finished <- true
 		return // already initialized
 	}
 	log.Println("[Initialize] Initializing go-away")
@@ -24,6 +25,7 @@ func Initialize() {
 		profanities = append(profanities, profanity)
 	}
 	initialized = true
+	finished <- true
 }
 
 /**
@@ -33,6 +35,9 @@ func Initialize() {
 func IsProfane(s string) bool {
 	if !initialized {
 		log.Println("You must call goaway.Initialize() first")
+		finished := make(chan bool)
+		Initialize(finished)
+		<- finished
 	}
 	s = strings.Replace(sanitize(s), " ", "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
