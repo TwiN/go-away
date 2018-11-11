@@ -15,6 +15,16 @@ func TestBadWords(t *testing.T)  {
 	}
 }
 
+func TestBadWordsWithAccentedLetters(t *testing.T)  {
+	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
+
+	for _, w := range words {
+		if !goaway.IsProfane(w) {
+			t.Error("Expected true, got false from word", w)
+		}
+	}
+}
+
 func TestSentencesWithBadWords(t *testing.T)  {
 	sentences := []string{"What the fuck is your problem", "Go away, asshole!"}
 
