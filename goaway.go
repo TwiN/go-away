@@ -31,7 +31,7 @@ func Initialize() {
  * Takes in a string (word or sentence) and look for profanities.
  * Returns a boolean
  */
-func CheckIfProfane(s string) bool {
+func IsProfane(s string) bool {
 	if !initialized {
 		Initialize()
 	}
