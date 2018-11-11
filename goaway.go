@@ -2,6 +2,10 @@ package goaway
 
 import (
 	"strings"
+	"unicode"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
+	"golang.org/x/text/runes"
 )
 
 var profanities = []string{"anal","anus","arse","ass","ballsack","balls","bastard","bitch","biatch","bloody","blowjob","bollock","bollok","boner","boob","bugger","bum","butt","clitoris","cock","coon","crap","cunt","dick","dildo","dyke","fag","feck","fellate","fellatio","felching","fuck","fudgepacker","flange","homo","jerk","jizz","labia","muff","naked","nigger","nigga","nude","penis","piss","poop","porn","prick","pube","pussy","queer","scrotum","sex","shit","slut","spunk","suckmy","tit","tosser","turd","twat","vagina","wank","whore"}
@@ -22,6 +26,7 @@ func IsProfane(s string) bool {
 }
 
 func sanitize(s string) string {
+	s = removeAccents(s)
 	s = strings.ToLower(s)
 	s = strings.Replace(s, "0", "o", -1)
 	s = strings.Replace(s, "1", "i", -1)
@@ -39,4 +44,13 @@ func sanitize(s string) string {
 	s = strings.Replace(s, "-", " ", -1)
 	s = strings.Replace(s, "*", " ", -1)
 	return s
+}
+
+func removeAccents(s string) string  {
+	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	output, _, e := transform.String(t, s)
+	if e != nil {
+		panic(e)
+	}
+	return output
 }
