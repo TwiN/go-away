@@ -30,7 +30,7 @@ func TestNormalWords(t *testing.T)  {
 
 	for _, w := range words {
 		if goaway.IsProfane(w) {
-			t.Error("Expected false, got false from word", w)
+			t.Error("Expected false, got true from word", w)
 		}
 	}
 }
