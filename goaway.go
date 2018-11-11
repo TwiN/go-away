@@ -1,4 +1,4 @@
-package main
+package goaway
 
 import (
 	"log"
@@ -9,12 +9,14 @@ import (
 )
 
 var profanities []string
+var initialized bool
 
 func Initialize() {
+	log.Println("[Initialize] Initializing go-away")
 	inFile, err := os.Open("profanities.txt")
 	defer inFile.Close()
 	if err != nil {
-		log.Fatalln("[init] Error reading profanities file:", err.Error())
+		log.Fatalln("[Initialize] Error reading profanities file:", err.Error())
 		os.Exit(1)
 	}
 	scanner := bufio.NewScanner(inFile)
@@ -22,6 +24,7 @@ func Initialize() {
 	for scanner.Scan() {
 		profanities = append(profanities, scanner.Text())
 	}
+	initialized = true
 }
 
 /**
@@ -29,7 +32,10 @@ func Initialize() {
  * Returns a boolean
  */
 func Evaluate(s string) bool {
-	s = sanitize(s)
+	if !initialized {
+		Initialize()
+	}
+	s = strings.Replace(sanitize(s), " ", "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
 		wordPattern := `\b` + word + `\b`
 		match, _ := regexp.MatchString(wordPattern, s)
@@ -54,20 +60,9 @@ func sanitize(s string) string {
 	s = strings.Replace(s, "@", "a", -1)
 	s = strings.Replace(s, "!", "a", -1)
 	s = strings.Replace(s, "$", "s", -1)
+	s = strings.Replace(s, "()", "o", -1)
+	s = strings.Replace(s, "_", " ", -1)
+	s = strings.Replace(s, "-", " ", -1)
+	s = strings.Replace(s, "*", " ", -1)
 	return s
-}
-
-func main()  {
-	Initialize()
-	println(Evaluate("fuck"))
-	println(Evaluate("ass"))
-	println(Evaluate("Fuck"))
-	println(Evaluate("Ass"))
-	println(Evaluate("FUCK"))
-	println(Evaluate("ASS"))
-	println(Evaluate("A$$"))
-	println(Evaluate("4ss"))
-	println(Evaluate("4sS"))
-	println(Evaluate("4$s"))
-	println(Evaluate("hello"))
 }
