@@ -1,11 +1,10 @@
 # go-away
 
-go-away, a library for detecting profanities in Go
+go-away is a library for detecting profanities in Go.
 
-This library was actually made because I didn't want to add the overhead of a profanity filter in a discord bot I'm playing with, 
-hence why this is a library of its own.
+This library is stand-alone to avoid profanity filter overhead on Discord bots.
 
-It should be noted that this library should always remain **extremely** easy to use, so its original intent of not adding any overhead to any project will always remain.
+This library must remain **extremely** easy to use. Its original intent of not adding overhead will always remain.
 
 ## Installation
 
