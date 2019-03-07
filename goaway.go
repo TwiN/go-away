@@ -1,11 +1,11 @@
 package goaway
 
 import (
-	"strings"
-	"unicode"
+	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
-	"golang.org/x/text/runes"
+	"strings"
+	"unicode"
 )
 
 var profanities = []string{"anal","anus","arse","ass","ballsack","balls","bastard","bitch","biatch","blowjob","bollock","bollok","boner","boob","bugger","bum","butt","clitoris","cock","coon","crap","cum","cunt","dick","dildo","dyke","fag","feck","fellate","fellatio","felching","fuck","fudgepacker","flange","horny","incest","jerk","jizz","labia","muff","naked","nigger","nigga","nude","penis","piss","poop","porn","prick","pube","pussy","queer","rimjob","scrotum","sex","shit","slut","spunk","suckmy","tit","tosser","turd","twat","vagina","wank","whore"}
@@ -17,8 +17,7 @@ var profanities = []string{"anal","anus","arse","ass","ballsack","balls","bastar
 func IsProfane(s string) bool {
 	s = strings.Replace(sanitize(s), " ", "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
-		match := strings.Contains(s, word)
-		if match {
+		if match := strings.Contains(s, word); match {
 			return true
 		}
 	}
