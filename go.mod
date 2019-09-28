@@ -1,5 +1,5 @@
 module github.com/TwinProduction/go-away
 
-go 1.12
+go 1.13
 
 require golang.org/x/text v0.3.0
