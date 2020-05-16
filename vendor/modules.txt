@@ -1,4 +1,5 @@
 # golang.org/x/text v0.3.2
+## explicit
 golang.org/x/text/runes
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
