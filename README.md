@@ -7,14 +7,14 @@ This library must remain **extremely** easy to use. Its original intent of not a
 ## Installation
 
 ```
-go get github.com/TwinProduction/go-away
+go get github.com/mattwhite180/go-away
 ```
 
 ## Usage
 
 ```golang
 import (
-	"github.com/TwinProduction/go-away"
+	"github.com/mattwhite180/go-away"
 )
 
 goaway.IsProfane("fuck this shit") // returns true
