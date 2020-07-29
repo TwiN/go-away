@@ -4,4 +4,5 @@ var falsePositives = []string{
 	"Scuntthorpe",
 	"scuntthorpe",
 	"associate",
+	"assassin",
 }
