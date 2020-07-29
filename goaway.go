@@ -16,6 +16,12 @@ func IsProfane(s string) bool {
 	s = strings.Replace(sanitize(s), Space, "", -1) // Sanitize leetspeak AND remove all spaces
 	for _, word := range profanities {
 		if match := strings.Contains(s, word); match {
+			for _, wordFalse := range falsePositives {
+				if newMatch := strings.Contains(s, wordFalse); newMatch {
+					newString := strings.Replace(s, wordFalse, "", -1)
+					return IsProfane(newString)
+				}
+			}
 			return true
 		}
 	}
