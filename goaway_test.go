@@ -1,7 +1,7 @@
 package goaway_test
 
 import (
-	"github.com/TwinProduction/go-away"
+	"github.com/mattwhite180/go-away"
 	"testing"
 )
 
