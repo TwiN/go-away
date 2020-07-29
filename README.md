@@ -43,5 +43,3 @@ The upside of this method is that we only need to add base bad words, and not al
 
 e.g. the `fuck` entry would support `fucker`, `fucking`, etc)
 
-The downside is that words like `assassin`, which contain `ass`, would also be filtered as profane.
-So in the future, a list of false positives would have to be added.
