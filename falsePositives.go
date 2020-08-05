@@ -13,7 +13,6 @@ var falsePositives = []string{
 	"glass",
 	"lass",
 	"grass",
-	" sass ",
 	"mass",
 	"pass",
 }
