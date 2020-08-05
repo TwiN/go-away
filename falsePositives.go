@@ -15,4 +15,21 @@ var falsePositives = []string{
 	"grass",
 	"mass",
 	"pass",
+	"Penistone"
+	"clitheroe"
+	"horniman"
+	"shitake"
+	"sussex"
+	"cockburn"
+	"libshitz"
+	"magna cum laude"
+	"Super Bowl XXX"
+	"evaluate"
+	"mocha"
+	"expression"
+	"Arsenal"
+	"classic"
+	"Tyson Gay"
+	"Dick Van Dyke"
+	"basement"
 }
