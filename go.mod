@@ -1,4 +1,4 @@
-module github.com/mattwhite180/go-away/v1.0.2
+module github.com/mattwhite180/go-away/v1
 
 go 1.13
 
