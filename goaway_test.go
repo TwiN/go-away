@@ -1,12 +1,12 @@
 package goaway_test
 
 import (
-	"github.com/mattwhite180/go-away"
+	"github.com/mattwhite180/go-away/v1"
 	"testing"
 )
 
 func TestBadWords(t *testing.T) {
-	words := []string{"fuck", "ass", "poop", "penis", "bitch"}
+	words := []string{"fuck", "ass", "shit", "penis", "bitch"}
 	for _, w := range words {
 		if !goaway.IsProfane(w) {
 			t.Error("Expected true, got false from word '", w, "'")
@@ -15,7 +15,7 @@ func TestBadWords(t *testing.T) {
 }
 
 func TestBadWordsWithAccentedLetters(t *testing.T) {
-	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
+	words := []string{"fučk", "ÄšŚ", "sh1t", "pÉnìŚ", "bitčh"}
 	for _, w := range words {
 		if !goaway.IsProfane(w) {
 			t.Error("Expected true, got false from word '", w, "'")
@@ -42,7 +42,7 @@ func TestSneakyBadWords(t *testing.T) {
 }
 
 func TestSentencesWithSneakyBadWords(t *testing.T) {
-	sentences := []string{"You smell p00p", "Go away, a$$h0l3!"}
+	sentences := []string{"You smell $h1t", "Go away, a$$h0l3!"}
 	for _, s := range sentences {
 		if !goaway.IsProfane(s) {
 			t.Error("Expected true, got false from sentence '", s, "'")
