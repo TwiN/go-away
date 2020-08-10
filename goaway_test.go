@@ -69,7 +69,7 @@ func TestSentencesWithNoProfanities(t *testing.T) {
 }
 
 func TestSentencesWithFalsePositives(t *testing.T) {
-	sentences := []string{"I am from Scuntthorpe, north Lincolnshire", "He is an associate of mine"}
+	sentences := []string{"I am from Scuntthorpe, north Lincolnshire", "He is an associate of mine", "Are you an assassin?"}
 	for _, s := range sentences {
 		if goaway.IsProfane(s) {
 			t.Error("Expected false, got true from sentence", s)
@@ -78,7 +78,7 @@ func TestSentencesWithFalsePositives(t *testing.T) {
 }
 
 func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
-	sentences := []string{"You are a shitty associate", "Go back to Scuntthorpe, Asshole!"}
+	sentences := []string{"You are a shitty associate", "Go away, asshole!"}
 	for _, s := range sentences {
 		if !goaway.IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
