@@ -67,3 +67,21 @@ func TestSentencesWithNoProfanities(t *testing.T) {
 		}
 	}
 }
+
+func TestSentencesWithFalsePositives(t *testing.T) {
+	sentences := []string{"I am from Scuntthorpe, north Lincolnshire", "He is an associate of mine"}
+	for _, s := range sentences {
+		if goaway.IsProfane(s) {
+			t.Error("Expected false, got true from sentence", s)
+		}
+	}
+}
+
+func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
+	sentences := []string{"You are a shitty associate", "Go back to Scuntthorpe, Asshole!"}
+	for _, s := range sentences {
+		if !goaway.IsProfane(s) {
+			t.Error("Expected true, got false from sentence", s)
+		}
+	}
+}
