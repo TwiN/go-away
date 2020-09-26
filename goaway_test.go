@@ -33,7 +33,7 @@ func TestSentencesWithBadWords(t *testing.T) {
 }
 
 func TestSneakyBadWords(t *testing.T) {
-	words := []string{"A$$", "4ss", "4s$", "a S s", "a $ s", "@$$h073", "f    u     c k"}
+	words := []string{"A$$", "4ss", "4s$", "a S s", "a $ s", "@$$h073", "f    u     c k", "4r5e", "5h1t", "5hit", "a55", "ar5e", "a_s_s", "b!tch", "b!+ch"}
 	for _, w := range words {
 		if !goaway.IsProfane(w) {
 			t.Error("Expected true, got false from word", w)
