@@ -10,13 +10,16 @@ import (
 
 const Space = " "
 
-// Takes in a string (word or sentence) and look for profanities.
+// IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func IsProfane(s string) bool {
-	s = strings.Replace(sanitize(s), Space, "", -1) // Sanitize leetspeak AND remove all spaces
+	// Sanitize leetspeak AND remove all spaces
+	s = strings.Replace(sanitize(s), Space, "", -1)
+	// Remove false positives
 	for _, falsePositive := range falsePositives {
 		s = strings.Replace(s, falsePositive, "", -1)
 	}
+	// Check for profanities
 	for _, word := range profanities {
 		if match := strings.Contains(s, word); match {
 			return true
