@@ -37,9 +37,9 @@ Instead, the following steps are taken before checking for profanities in a stri
 
 - Numbers are replaced to their letter counterparts (e.g. 1 -> L, 4 -> A, etc)
 - Special characters are replaced to their letter equivalent (e.g. @ -> A, ! -> i)
-- The resulting string has all of its spaces removed, to prevent `w  ords  lik e   tha   t`
+- The resulting string has all of its spaces removed to prevent `w  ords  lik e   tha   t`
 - The string has all of its characters converted to lowercase
-- [**TODO**] All non-transformed special characters are removed, to prevent `w__ords li.ke tha--t`
+- [**TODO**] All non-transformed special characters are removed to prevent `w__ords li.ke tha--t`
 - [**TODO**] All words that have the same character repeated more than twice in a row are removed (e.g. `poooop -> poop`)
     - NOTE: This is obviously not a perfect approach, as words like `fuuck` wouldn't be detected, but it's better than nothing.
     
