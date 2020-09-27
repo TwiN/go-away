@@ -60,7 +60,25 @@ func TestNormalWords(t *testing.T) {
 }
 
 func TestSentencesWithNoProfanities(t *testing.T) {
-	sentences := []string{"hello, my friend", "what's up?", "do you want to play bingo?"}
+	sentences := []string{
+		"hello, my friend",
+		"what's up?",
+		"do you want to play bingo?",
+		"who are you?",
+		"Better late than never",
+		"Bite the bullet",
+		"Break a leg",
+		"Call it a day",
+		"Be careful when you're driving",
+		"How are you?",
+		"Hurry up!",
+		"I don't like her",
+		"If you need my help, please let me know",
+		"Leave a message after the beep",
+		"Thank you",
+		"Yes, really",
+		"Call me at 9, ok?",
+	}
 	for _, s := range sentences {
 		if goaway.IsProfane(s) {
 			t.Error("Expected false, got false from sentence", s)
@@ -69,7 +87,7 @@ func TestSentencesWithNoProfanities(t *testing.T) {
 }
 
 func TestSentencesWithFalsePositives(t *testing.T) {
-	sentences := []string{"I am from Scuntthorpe, north Lincolnshire", "He is an associate of mine", "Are you an assassin?"}
+	sentences := []string{"I am from Scuntthorpe, north Lincolnshire", "He is an associate of mine", "Are you an assassin?", "But the table is on fire"}
 	for _, s := range sentences {
 		if goaway.IsProfane(s) {
 			t.Error("Expected false, got true from sentence", s)
@@ -82,6 +100,42 @@ func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
 	for _, s := range sentences {
 		if !goaway.IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
+		}
+	}
+}
+
+// "The Adventures of Sherlock Holmes" by Arthur Conan Doyle is in the public domain,
+// which makes it a perfect source to use as reference.
+func TestSentencesFromTheAdventuresOfSherlockHolmes(t *testing.T) {
+	sentences := []string{
+		"I had called upon my friend, Mr. Sherlock Holmes, one day in the autumn of last year and found him in deep conversation with a very stout, florid-faced, elderly gentleman with fiery red hair.",
+		"With an apology for my intrusion, I was about to withdraw when Holmes pulled me abruptly into the room and closed the door behind me.",
+		"You could not possibly have come at a better time, my dear Watson, he said cordially",
+		"I was afraid that you were engaged.",
+		"So I am. Very much so.",
+		"Then I can wait in the next room.",
+		"Not at all. This gentleman, Mr. Wilson, has been my partner and helper in many of my most successful cases, and I have no doubt that he will be of the utmost use to me in yours also.",
+		"The stout gentleman half rose from his chair and gave a bob of greeting, with a quick little questioning glance from his small fat-encircled eyes",
+		"Try the settee, said Holmes, relapsing into his armchair and putting his fingertips together, as was his custom when in judicial moods.",
+		"I know, my dear Watson, that you share my love of all that is bizarre and outside the conventions and humdrum routine of everyday life.",
+		"You have shown your relish for it by the enthusiasm which has prompted you to chronicle, and, if you will excuse my saying so, somewhat to embellish so many of my own little adventures.",
+		"You did, Doctor, but none the less you must come round to my view, for otherwise I shall keep on piling fact upon fact on you until your reason breaks down under them and acknowledges me to be right.",
+		"Now, Mr. Jabez Wilson here has been good enough to call upon me this morning, and to begin a narrative which promises to be one of the most singular which I have listened to for some time.",
+		"You have heard me remark that the strangest and most unique things are very often connected not with the larger but with the smaller crimes, and occasionally",
+		"indeed, where there is room for doubt whether any positive crime has been committed.",
+		"As far as I have heard it is impossible for me to say whether the present case is an instance of crime or not, but the course of events is certainly among the most singular that I have ever listened to.",
+		"Perhaps, Mr. Wilson, you would have the great kindness to recommence your narrative.",
+		"I ask you not merely because my friend Dr. Watson has not heard the opening part but also because the peculiar nature of the story makes me anxious to have every possible detail from your lips.",
+		"As a rule, when I have heard some slight indication of the course of events, I am able to guide myself by the thousands of other similar cases which occur to my memory.",
+		"In the present instance I am forced to admit that the facts are, to the best of my belief, unique.",
+		"We had reached the same crowded thoroughfare in which we had found ourselves in the morning.",
+		"Our cabs were dismissed, and, following the guidance of Mr. Merryweather, we passed down a narrow passage and through a side door, which he opened for us",
+		"Within there was a small corridor, which ended in a very massive iron gate.",
+		"We were seated at breakfast one morning, my wife and I, when the maid brought in a telegram. It was from Sherlock Holmes and ran in this way",
+	}
+	for _, s := range sentences {
+		if goaway.IsProfane(s) {
+			t.Error("Expected false, got false from sentence", s)
 		}
 	}
 }
