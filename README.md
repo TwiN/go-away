@@ -1,14 +1,18 @@
 # go-away
 
+![build](https://github.com/TwinProduction/go-away/workflows/build/badge.svg)
+
 go-away is a stand-alone, lightweight library for detecting profanities in Go.
 
 This library must remain **extremely** easy to use. Its original intent of not adding overhead will always remain.
+
 
 ## Installation
 
 ```
 go get github.com/TwinProduction/go-away
 ```
+
 
 ## Usage
 
@@ -17,11 +21,12 @@ import (
 	"github.com/TwinProduction/go-away"
 )
 
-goaway.IsProfane("fuck this shit") // returns true
+goaway.IsProfane("fuck this shit")         // returns true
 goaway.IsProfane("F   u   C  k th1$ $h!t") // returns true
-goaway.IsProfane("@$$h073") // returns true
-goaway.IsProfane("hello, world!") // returns false
+goaway.IsProfane("@$$h073")                // returns true
+goaway.IsProfane("hello, world!")          // returns false
 ```
+
 
 ## In the background
 
@@ -41,4 +46,4 @@ Instead, the following steps are taken before checking for profanities in a stri
 
 The upside of this method is that we only need to add base bad words, and not all tenses of said bad word.
 
-e.g. the `fuck` entry would support `fucker`, `fucking`, etc)
+e.g. the `fuck` entry would support `fucker`, `fucking`, etc.
