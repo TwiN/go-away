@@ -10,6 +10,8 @@ import (
 
 const Space = " "
 
+var sanitizeAccents = true
+
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func IsProfane(s string) bool {
@@ -29,7 +31,9 @@ func IsProfane(s string) bool {
 }
 
 func sanitize(s string) string {
-	s = removeAccents(s)
+	if sanitizeAccents {
+		s = removeAccents(s)
+	}
 	s = strings.ToLower(s)
 	s = strings.Replace(s, "0", "o", -1)
 	s = strings.Replace(s, "1", "i", -1)
@@ -57,4 +61,11 @@ func removeAccents(s string) string {
 		panic(e)
 	}
 	return output
+}
+
+// SetSanitizeAccent allows you to configure whether the sanitization process should also take into account accents.
+// By default, this is set to true, but since this adds a bit of overhead, you may disable it if your use case
+// is time-sensitive or if the input doesn't involve accents (i.e. if the input can never contain special characters)
+func SetSanitizeAccent(sanitize bool) {
+	sanitizeAccents = sanitize
 }
