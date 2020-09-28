@@ -1,14 +1,13 @@
-package goaway_test
+package goaway
 
 import (
-	"github.com/TwinProduction/go-away"
 	"testing"
 )
 
 func TestBadWords(t *testing.T) {
 	words := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	for _, w := range words {
-		if !goaway.IsProfane(w) {
+		if !IsProfane(w) {
 			t.Error("Expected true, got false from word", w)
 		}
 	}
@@ -17,7 +16,7 @@ func TestBadWords(t *testing.T) {
 func TestBadWordsWithAccentedLetters(t *testing.T) {
 	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
 	for _, w := range words {
-		if !goaway.IsProfane(w) {
+		if !IsProfane(w) {
 			t.Error("Expected true, got false from word", w)
 		}
 	}
@@ -26,7 +25,7 @@ func TestBadWordsWithAccentedLetters(t *testing.T) {
 func TestSentencesWithBadWords(t *testing.T) {
 	sentences := []string{"What the fuck is your problem", "Go away, asshole!"}
 	for _, s := range sentences {
-		if !goaway.IsProfane(s) {
+		if !IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
 		}
 	}
@@ -35,7 +34,7 @@ func TestSentencesWithBadWords(t *testing.T) {
 func TestSneakyBadWords(t *testing.T) {
 	words := []string{"A$$", "4ss", "4s$", "a S s", "a $ s", "@$$h073", "f    u     c k", "4r5e", "5h1t", "5hit", "a55", "ar5e", "a_s_s", "b!tch", "b!+ch"}
 	for _, w := range words {
-		if !goaway.IsProfane(w) {
+		if !IsProfane(w) {
 			t.Error("Expected true, got false from word", w)
 		}
 	}
@@ -44,7 +43,7 @@ func TestSneakyBadWords(t *testing.T) {
 func TestSentencesWithSneakyBadWords(t *testing.T) {
 	sentences := []string{"You smell p00p", "Go away, a$$h0l3!"}
 	for _, s := range sentences {
-		if !goaway.IsProfane(s) {
+		if !IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
 		}
 	}
@@ -53,7 +52,7 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 func TestNormalWords(t *testing.T) {
 	words := []string{"hello", "world", "whats", "up"}
 	for _, w := range words {
-		if goaway.IsProfane(w) {
+		if IsProfane(w) {
 			t.Error("Expected false, got true from word", w)
 		}
 	}
@@ -80,17 +79,28 @@ func TestSentencesWithNoProfanities(t *testing.T) {
 		"Call me at 9, ok?",
 	}
 	for _, s := range sentences {
-		if goaway.IsProfane(s) {
+		if IsProfane(s) {
 			t.Error("Expected false, got false from sentence", s)
 		}
 	}
 }
 
-func TestSentencesWithFalsePositives(t *testing.T) {
-	sentences := []string{"I am from Scuntthorpe, north Lincolnshire", "He is an associate of mine", "Are you an assassin?", "But the table is on fire"}
+func TestFalsePositives(t *testing.T) {
+	sentences := []string{
+		"I am from Scuntthorpe, north Lincolnshire",
+		"He is an associate of mine",
+		"Are you an assassin?",
+		"But the table is on fire",
+		"glass",
+		"grass",
+		"classic",
+		"classification",
+		"passion",
+		"carcass",
+	}
 	for _, s := range sentences {
-		if goaway.IsProfane(s) {
-			t.Error("Expected false, got true from sentence", s)
+		if IsProfane(s) {
+			t.Error("Expected false, got true from:", s)
 		}
 	}
 }
@@ -98,7 +108,7 @@ func TestSentencesWithFalsePositives(t *testing.T) {
 func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
 	sentences := []string{"You are a shitty associate", "Go away, asshole!"}
 	for _, s := range sentences {
-		if !goaway.IsProfane(s) {
+		if !IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
 		}
 	}
@@ -134,8 +144,16 @@ func TestSentencesFromTheAdventuresOfSherlockHolmes(t *testing.T) {
 		"We were seated at breakfast one morning, my wife and I, when the maid brought in a telegram. It was from Sherlock Holmes and ran in this way",
 	}
 	for _, s := range sentences {
-		if goaway.IsProfane(s) {
+		if IsProfane(s) {
 			t.Error("Expected false, got false from sentence", s)
 		}
+	}
+}
+
+func TestSanitize(t *testing.T) {
+	expectedString := "whatthefuckisyourproblem"
+	sanitizedString := sanitize("What the fu_ck is your pr0bl3m?")
+	if sanitizedString != expectedString {
+		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
 	}
 }

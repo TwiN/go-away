@@ -15,8 +15,7 @@ var sanitizeAccents = true
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func IsProfane(s string) bool {
-	// Sanitize leetspeak AND remove all spaces
-	s = strings.Replace(sanitize(s), Space, "", -1)
+	s = sanitize(s)
 	// Remove false positives
 	for _, falsePositive := range falsePositives {
 		s = strings.Replace(s, falsePositive, "", -1)
@@ -44,13 +43,16 @@ func sanitize(s string) string {
 	s = strings.Replace(s, "7", "l", -1)
 	s = strings.Replace(s, "8", "b", -1)
 	s = strings.Replace(s, "@", "a", -1)
-	s = strings.Replace(s, "!", "i", -1)
 	s = strings.Replace(s, "+", "t", -1)
 	s = strings.Replace(s, "$", "s", -1)
 	s = strings.Replace(s, "()", "o", -1)
-	s = strings.Replace(s, "_", Space, -1)
-	s = strings.Replace(s, "-", Space, -1)
-	s = strings.Replace(s, "*", Space, -1)
+	s = strings.Replace(s, "_", "", -1)
+	s = strings.Replace(s, "-", "", -1)
+	s = strings.Replace(s, "*", "", -1)
+	s = strings.Replace(s, "'", "", -1)
+	s = strings.Replace(s, "?", "", -1)
+	s = strings.Replace(s, "!", "", -1)
+	s = strings.Replace(s, Space, "", -1)
 	return s
 }
 
