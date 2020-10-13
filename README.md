@@ -1,3 +1,5 @@
+![go-away](/.github/assets/go-away.png)
+
 # go-away
 
 ![build](https://github.com/TwinProduction/go-away/workflows/build/badge.svg)
