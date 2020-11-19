@@ -20,7 +20,7 @@ go get github.com/TwinProduction/go-away
 
 ## Usage
 
-```golang
+```go
 import (
 	"github.com/TwinProduction/go-away"
 )
@@ -29,6 +29,14 @@ goaway.IsProfane("fuck this shit")         // returns true
 goaway.IsProfane("F   u   C  k th1$ $h!t") // returns true
 goaway.IsProfane("@$$h073")                // returns true
 goaway.IsProfane("hello, world!")          // returns false
+```
+
+By default, `IsProfane` uses a default profanity detector, but if you'd like to disable leet speak,
+numerical character or special character sanitization, you have to create a ProfanityDetector instead:
+
+```go
+profanityDetector := goaway.NewProfanityDetector().WithSanitizeLeetSpeak(false).WithSanitizeSpecialCharacters(false).WithSanitizeAccents(false)
+profanityDetector.IsProfane("b!tch") // returns false because we're not sanitizing special characters
 ```
 
 

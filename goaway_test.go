@@ -6,8 +6,9 @@ import (
 
 func TestBadWords(t *testing.T) {
 	words := []string{"fuck", "ass", "poop", "penis", "bitch"}
+	goAway := NewProfanityDetector()
 	for _, w := range words {
-		if !IsProfane(w) {
+		if !goAway.IsProfane(w) {
 			t.Error("Expected true, got false from word", w)
 		}
 	}
@@ -16,16 +17,20 @@ func TestBadWords(t *testing.T) {
 func TestBadWordsWithAccentedLetters(t *testing.T) {
 	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
 	for _, w := range words {
-		if !IsProfane(w) {
-			t.Error("Expected true, got false from word", w)
+		if !NewProfanityDetector().WithSanitizeAccents(true).IsProfane(w) {
+			t.Error("Expected true because sanitizeAccents is set to true, got false from word", w)
+		}
+		if NewProfanityDetector().WithSanitizeAccents(false).IsProfane(w) {
+			t.Error("Expected false because sanitizeAccents is set to false, got true from word", w)
 		}
 	}
 }
 
 func TestSentencesWithBadWords(t *testing.T) {
 	sentences := []string{"What the fuck is your problem", "Go away, asshole!"}
+	goAway := NewProfanityDetector()
 	for _, s := range sentences {
-		if !IsProfane(s) {
+		if !goAway.IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
 		}
 	}
@@ -33,8 +38,9 @@ func TestSentencesWithBadWords(t *testing.T) {
 
 func TestSneakyBadWords(t *testing.T) {
 	words := []string{"A$$", "4ss", "4s$", "a S s", "a $ s", "@$$h073", "f    u     c k", "4r5e", "5h1t", "5hit", "a55", "ar5e", "a_s_s", "b!tch", "b!+ch"}
+	goAway := NewProfanityDetector()
 	for _, w := range words {
-		if !IsProfane(w) {
+		if !goAway.IsProfane(w) {
 			t.Error("Expected true, got false from word", w)
 		}
 	}
@@ -42,8 +48,9 @@ func TestSneakyBadWords(t *testing.T) {
 
 func TestSentencesWithSneakyBadWords(t *testing.T) {
 	sentences := []string{"You smell p00p", "Go away, a$$h0l3!"}
+	goAway := NewProfanityDetector()
 	for _, s := range sentences {
-		if !IsProfane(s) {
+		if !goAway.IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
 		}
 	}
@@ -51,8 +58,9 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 
 func TestNormalWords(t *testing.T) {
 	words := []string{"hello", "world", "whats", "up"}
+	goAway := NewProfanityDetector()
 	for _, w := range words {
-		if IsProfane(w) {
+		if goAway.IsProfane(w) {
 			t.Error("Expected false, got true from word", w)
 		}
 	}
@@ -98,8 +106,9 @@ func TestFalsePositives(t *testing.T) {
 		"passion",
 		"carcass",
 	}
+	goAway := NewProfanityDetector()
 	for _, s := range sentences {
-		if IsProfane(s) {
+		if goAway.IsProfane(s) {
 			t.Error("Expected false, got true from:", s)
 		}
 	}
@@ -107,8 +116,9 @@ func TestFalsePositives(t *testing.T) {
 
 func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
 	sentences := []string{"You are a shitty associate", "Go away, asshole!"}
+	goAway := NewProfanityDetector()
 	for _, s := range sentences {
-		if !IsProfane(s) {
+		if !goAway.IsProfane(s) {
 			t.Error("Expected true, got false from sentence", s)
 		}
 	}
@@ -152,7 +162,23 @@ func TestSentencesFromTheAdventuresOfSherlockHolmes(t *testing.T) {
 
 func TestSanitize(t *testing.T) {
 	expectedString := "whatthefuckisyourproblem"
-	sanitizedString := sanitize("What the fu_ck is your pr0bl3m?")
+	sanitizedString := NewProfanityDetector().sanitize("What the fu_ck is y()ur pr0bl3m?")
+	if sanitizedString != expectedString {
+		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
+	}
+}
+
+func TestSanitizeWithoutSanitizingSpecialCharacters(t *testing.T) {
+	expectedString := "whatthefu_ckisy()urproblem?"
+	sanitizedString := NewProfanityDetector().WithSanitizeSpecialCharacters(false).sanitize("What the fu_ck is y()ur pr0bl3m?")
+	if sanitizedString != expectedString {
+		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
+	}
+}
+
+func TestSanitizeWithoutSanitizingLeetSpeak(t *testing.T) {
+	expectedString := "whatthefuckisy()urpr0bl3m"
+	sanitizedString := NewProfanityDetector().WithSanitizeLeetSpeak(false).sanitize("What the fu_ck is y()ur pr0bl3m?")
 	if sanitizedString != expectedString {
 		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
 	}

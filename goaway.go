@@ -1,21 +1,60 @@
 package goaway
 
 import (
+	"strings"
+	"unicode"
+
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
-	"strings"
-	"unicode"
 )
 
 const Space = " "
 
-var sanitizeAccents = true
+var defaultProfanityDetector *ProfanityDetector
+
+// ProfanityDetector
+type ProfanityDetector struct {
+	sanitizeSpecialCharacters bool
+	sanitizeLeetSpeak         bool
+	sanitizeAccents           bool
+}
+
+// NewProfanityDetector creates a new ProfanityDetector
+func NewProfanityDetector() *ProfanityDetector {
+	return &ProfanityDetector{
+		sanitizeSpecialCharacters: true,
+		sanitizeLeetSpeak:         true,
+		sanitizeAccents:           true,
+	}
+}
+
+// WithSanitizeLeetSpeak allows configuring whether the sanitization process should also take into account
+// leetspeak
+func (g *ProfanityDetector) WithSanitizeLeetSpeak(sanitize bool) *ProfanityDetector {
+	g.sanitizeLeetSpeak = sanitize
+	return g
+}
+
+// WithSanitizeSpecialCharacters allows configuring whether the sanitization process should also take into account
+// special characters
+func (g *ProfanityDetector) WithSanitizeSpecialCharacters(sanitize bool) *ProfanityDetector {
+	g.sanitizeSpecialCharacters = sanitize
+	return g
+}
+
+// WithSanitizeAccents allows configuring of whether the sanitization process should also take into account accents.
+// By default, this is set to true, but since this adds a bit of overhead, you may disable it if your use case
+// is time-sensitive or if the input doesn't involve accents (i.e. if the input can never contain special characters)
+func (g *ProfanityDetector) WithSanitizeAccents(sanitize bool) *ProfanityDetector {
+	g.sanitizeAccents = sanitize
+	return g
+}
 
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
-func IsProfane(s string) bool {
-	s = sanitize(s)
+func (g *ProfanityDetector) IsProfane(s string) bool {
+	s = g.sanitize(s)
 	// Remove false positives
 	for _, falsePositive := range falsePositives {
 		s = strings.Replace(s, falsePositive, "", -1)
@@ -29,45 +68,51 @@ func IsProfane(s string) bool {
 	return false
 }
 
-func sanitize(s string) string {
-	if sanitizeAccents {
+func (g ProfanityDetector) sanitize(s string) string {
+	if g.sanitizeAccents {
 		s = removeAccents(s)
 	}
 	s = strings.ToLower(s)
-	s = strings.Replace(s, "0", "o", -1)
-	s = strings.Replace(s, "1", "i", -1)
-	s = strings.Replace(s, "3", "e", -1)
-	s = strings.Replace(s, "4", "a", -1)
-	s = strings.Replace(s, "5", "s", -1)
-	s = strings.Replace(s, "6", "b", -1)
-	s = strings.Replace(s, "7", "l", -1)
-	s = strings.Replace(s, "8", "b", -1)
-	s = strings.Replace(s, "@", "a", -1)
-	s = strings.Replace(s, "+", "t", -1)
-	s = strings.Replace(s, "$", "s", -1)
-	s = strings.Replace(s, "()", "o", -1)
-	s = strings.Replace(s, "_", "", -1)
-	s = strings.Replace(s, "-", "", -1)
-	s = strings.Replace(s, "*", "", -1)
-	s = strings.Replace(s, "'", "", -1)
-	s = strings.Replace(s, "?", "", -1)
-	s = strings.Replace(s, "!", "", -1)
+	if g.sanitizeLeetSpeak {
+		s = strings.Replace(s, "0", "o", -1)
+		s = strings.Replace(s, "1", "i", -1)
+		s = strings.Replace(s, "3", "e", -1)
+		s = strings.Replace(s, "4", "a", -1)
+		s = strings.Replace(s, "5", "s", -1)
+		s = strings.Replace(s, "6", "b", -1)
+		s = strings.Replace(s, "7", "l", -1)
+		s = strings.Replace(s, "8", "b", -1)
+	}
+	if g.sanitizeSpecialCharacters {
+		if g.sanitizeLeetSpeak {
+			s = strings.Replace(s, "@", "a", -1)
+			s = strings.Replace(s, "+", "t", -1)
+			s = strings.Replace(s, "$", "s", -1)
+			s = strings.Replace(s, "()", "o", -1)
+		}
+		s = strings.Replace(s, "_", "", -1)
+		s = strings.Replace(s, "-", "", -1)
+		s = strings.Replace(s, "*", "", -1)
+		s = strings.Replace(s, "'", "", -1)
+		s = strings.Replace(s, "?", "", -1)
+		s = strings.Replace(s, "!", "", -1)
+	}
+
 	s = strings.Replace(s, Space, "", -1)
 	return s
 }
 
 func removeAccents(s string) string {
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
-	output, _, e := transform.String(t, s)
-	if e != nil {
-		panic(e)
-	}
+	output, _, _ := transform.String(t, s)
 	return output
 }
 
-// SetSanitizeAccent allows you to configure whether the sanitization process should also take into account accents.
-// By default, this is set to true, but since this adds a bit of overhead, you may disable it if your use case
-// is time-sensitive or if the input doesn't involve accents (i.e. if the input can never contain special characters)
-func SetSanitizeAccent(sanitize bool) {
-	sanitizeAccents = sanitize
+// IsProfane checks whether there are any profanities in a given string (word or sentence).
+// Uses the default ProfanityDetector
+func IsProfane(s string) bool {
+	if defaultProfanityDetector == nil {
+		defaultProfanityDetector = NewProfanityDetector()
+	}
+	return defaultProfanityDetector.IsProfane(s)
 }
