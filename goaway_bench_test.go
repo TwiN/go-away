@@ -5,85 +5,109 @@ import (
 )
 
 func BenchmarkIsProfaneWhenShortStringHasNoProfanity(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("aaaaaaaaaaaaaa")
+		IsProfane("aaaaaaaaaaaaaa")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenShortStringHasProfanityAtTheStart(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("fuckaaaaaaaaaa")
+		IsProfane("fuckaaaaaaaaaa")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenShortStringHasProfanityInTheMiddle(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("aaaaafuckaaaaa")
+		IsProfane("aaaaafuckaaaaa")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenShortStringHasProfanityAtTheEnd(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("aaaaaaaaaafuck")
+		IsProfane("aaaaaaaaaafuck")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenMediumStringHasNoProfanity(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("How are you doing today?")
+		IsProfane("How are you doing today?")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenMediumStringHasProfanityAtTheStart(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("Shit, you're cute today.")
+		IsProfane("Shit, you're cute today.")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenMediumStringHasProfanityInTheMiddle(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("How are you fu ck doing?")
+		IsProfane("How are you fu ck doing?")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenMediumStringHasProfanityAtTheEnd(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("you're cute today. Fuck.")
+		IsProfane("you're cute today. Fuck.")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenLongStringHasNoProfanity(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie brand")
+		IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie brand")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenLongStringHasProfanityAtTheStart(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("Fuck John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie brand")
+		IsProfane("Fuck John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie brand")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenLongStringHasProfanityInTheMiddle(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing shitty news regarding your favorite chocolate chip cookie brand")
+		IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing shitty news regarding your favorite chocolate chip cookie brand")
 	}
+	b.ReportAllocs()
 }
 
 func BenchmarkIsProfaneWhenLongStringHasProfanityAtTheEnd(b *testing.B) {
-	goaway := NewProfanityDetector()
 	for n := 0; n < b.N; n++ {
-		goaway.IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie bitch")
+		IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie bitch")
 	}
+	b.ReportAllocs()
+}
+
+func BenchmarkProfanityDetector_WithSanitizeAccentsSetToFalseWhenLongStringHasProfanityAtTheStart(b *testing.B) {
+	profanityDetector := NewProfanityDetector().WithSanitizeAccents(false)
+	for n := 0; n < b.N; n++ {
+		profanityDetector.IsProfane("Fuck John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie brand")
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkProfanityDetector_WithSanitizeAccentsSetToFalseWhenLongStringHasProfanityInTheMiddle(b *testing.B) {
+	profanityDetector := NewProfanityDetector().WithSanitizeAccents(false)
+	for n := 0; n < b.N; n++ {
+		profanityDetector.IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing shitty news regarding your favorite chocolate chip cookie brand")
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkProfanityDetector_WithSanitizeAccentsSetToFalseWhenLongStringHasProfanityAtTheEnd(b *testing.B) {
+	profanityDetector := NewProfanityDetector().WithSanitizeAccents(false)
+	for n := 0; n < b.N; n++ {
+		profanityDetector.IsProfane("Hello John Doe, I hope you're feeling well, as I come today bearing terrible news regarding your favorite chocolate chip cookie bitch")
+	}
+	b.ReportAllocs()
 }
