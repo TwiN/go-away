@@ -11,7 +11,10 @@ import (
 
 const Space = " "
 
-var defaultProfanityDetector *ProfanityDetector
+var (
+	defaultProfanityDetector *ProfanityDetector
+	removeAccentsTransformer transform.Transformer
+)
 
 // ProfanityDetector
 type ProfanityDetector struct {
@@ -103,8 +106,10 @@ func (g ProfanityDetector) sanitize(s string) string {
 }
 
 func removeAccents(s string) string {
-	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
-	output, _, _ := transform.String(t, s)
+	if removeAccentsTransformer == nil {
+		removeAccentsTransformer = transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	}
+	output, _, _ := transform.String(removeAccentsTransformer, s)
 	return output
 }
 
