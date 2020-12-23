@@ -50,12 +50,12 @@ Instead, the following steps are taken before checking for profanities in a stri
 - Numbers are replaced to their letter counterparts (e.g. 1 -> L, 4 -> A, etc)
 - Special characters are replaced to their letter equivalent (e.g. @ -> A, ! -> i)
 - The resulting string has all of its spaces removed to prevent `w  ords  lik e   tha   t`
-- The string has all of its characters converted to lowercase
-- [**TODO**] All non-transformed special characters are removed to prevent `w__ords li.ke tha--t`
-- [**TODO**] All words that have the same character repeated more than twice in a row are removed (e.g. `poooop -> poop`)
-    - NOTE: This is obviously not a perfect approach, as words like `fuuck` wouldn't be detected, but it's better than nothing.
-    
+- The resulting string has all of its characters converted to lowercase
+- The resulting string has all words deemed as false positives (e.g. `assassin`) removed
 
-The upside of this method is that we only need to add base bad words, and not all tenses of said bad word.
+In the future, the following additional steps could also be considered:
+- All non-transformed special characters are removed to prevent `s~tring li~ke tha~~t`
+- All words that have the same character repeated more than twice in a row are removed (e.g. `poooop -> poop`)
+  - NOTE: This is obviously not a perfect approach, as words like `fuuck` wouldn't be detected, but it's better than nothing.
+  - The upside of this method is that we only need to add base bad words, and not all tenses of said bad word. (e.g. the `fuck` entry would support `fucker`, `fucking`, etc.)
 
-e.g. the `fuck` entry would support `fucker`, `fucking`, etc.
