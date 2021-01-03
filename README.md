@@ -15,7 +15,7 @@ This library must remain **extremely** easy to use. Its original intent of not a
 ## Installation
 
 ```
-go get github.com/TwinProduction/go-away
+go get -u github.com/TwinProduction/go-away
 ```
 
 
