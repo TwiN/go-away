@@ -61,6 +61,7 @@ var profanities = []string{
 	"poop",
 	"porn",
 	"prick",
+	"prostitut",
 	"pube",
 	"pussie",
 	"pussy",
