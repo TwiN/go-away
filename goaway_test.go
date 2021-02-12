@@ -4,6 +4,16 @@ import (
 	"testing"
 )
 
+func TestNoDuplicatesBetweenProfanitiesAndFalseFalsePositives(t *testing.T) {
+	for _, profanity := range profanities {
+		for _, falseFalsePositive := range falseNegatives {
+			if profanity == falseFalsePositive {
+				t.Errorf("'%s' is already in 'falseNegatives', there's no need to have it in 'profanities' too", profanity)
+			}
+		}
+	}
+}
+
 func TestBadWords(t *testing.T) {
 	words := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	goAway := NewProfanityDetector()
@@ -47,7 +57,10 @@ func TestSneakyBadWords(t *testing.T) {
 }
 
 func TestSentencesWithSneakyBadWords(t *testing.T) {
-	sentences := []string{"You smell p00p", "Go away, a$$h0l3!"}
+	sentences := []string{
+		"You smell p00p",
+		"Go away, a$$h0l3!",
+	}
 	goAway := NewProfanityDetector()
 	for _, s := range sentences {
 		if !goAway.IsProfane(s) {
@@ -105,10 +118,23 @@ func TestFalsePositives(t *testing.T) {
 		"classification",
 		"passion",
 		"carcass",
+		"just push it down the ledge", // puSH IT
 	}
 	goAway := NewProfanityDetector()
 	for _, s := range sentences {
 		if goAway.IsProfane(s) {
+			t.Error("Expected false, got true from:", s)
+		}
+	}
+}
+
+func TestFalseFalsePositives(t *testing.T) {
+	sentences := []string{
+		"dumb ass", // ass -> bASS (FP) -> dumBASS (FFP)
+	}
+	goAway := NewProfanityDetector()
+	for _, s := range sentences {
+		if !goAway.IsProfane(s) {
 			t.Error("Expected false, got true from:", s)
 		}
 	}

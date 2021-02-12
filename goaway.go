@@ -58,9 +58,15 @@ func (g *ProfanityDetector) WithSanitizeAccents(sanitize bool) *ProfanityDetecto
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
 	s = g.sanitize(s)
+	// Check for false false positives
+	for _, word := range falseNegatives {
+		if match := strings.Contains(s, word); match {
+			return true
+		}
+	}
 	// Remove false positives
-	for _, falsePositive := range falsePositives {
-		s = strings.Replace(s, falsePositive, "", -1)
+	for _, word := range falsePositives {
+		s = strings.Replace(s, word, "", -1)
 	}
 	// Check for profanities
 	for _, word := range profanities {
@@ -91,6 +97,7 @@ func (g ProfanityDetector) sanitize(s string) string {
 			s = strings.Replace(s, "@", "a", -1)
 			s = strings.Replace(s, "+", "t", -1)
 			s = strings.Replace(s, "$", "s", -1)
+			s = strings.Replace(s, "#", "h", -1)
 			s = strings.Replace(s, "()", "o", -1)
 		}
 		s = strings.Replace(s, "_", "", -1)
