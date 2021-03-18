@@ -78,9 +78,6 @@ func (g *ProfanityDetector) IsProfane(s string) bool {
 }
 
 func (g ProfanityDetector) sanitize(s string) string {
-	if g.sanitizeAccents {
-		s = removeAccents(s)
-	}
 	s = strings.ToLower(s)
 	if g.sanitizeLeetSpeak {
 		s = strings.Replace(s, "0", "o", -1)
@@ -108,6 +105,9 @@ func (g ProfanityDetector) sanitize(s string) string {
 		s = strings.Replace(s, "!", "", -1)
 	}
 	s = strings.Replace(s, Space, "", -1)
+	if g.sanitizeAccents {
+		s = removeAccents(s)
+	}
 	return s
 }
 

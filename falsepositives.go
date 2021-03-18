@@ -30,7 +30,9 @@ var falsePositives = []string{
 	"evaluate",
 	"exclusive",
 	"expensive",
+	"explain",
 	"expression",
+	"grape",
 	"grass",
 	"harass",
 	"horniman",
@@ -48,7 +50,7 @@ var falsePositives = []string{
 	"scuntthorpe",
 	"shitake",
 	"stitch",
-	"superbowlxxx",
 	"sussex",
+	"therapist",
 	"tysongay",
 }

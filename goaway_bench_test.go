@@ -111,3 +111,11 @@ func BenchmarkProfanityDetector_WithSanitizeAccentsSetToFalseWhenLongStringHasPr
 	}
 	b.ReportAllocs()
 }
+
+func BenchmarkProfanityDetector_Sanitize(b *testing.B) {
+	profanityDetector := NewProfanityDetector().WithSanitizeAccents(true).WithSanitizeSpecialCharacters(true).WithSanitizeLeetSpeak(true)
+	for n := 0; n < b.N; n++ {
+		profanityDetector.IsProfane("H3ll0 J0hn D0e, 1 h0p3 y0u'r3 f3eling w3ll, as 1 c0me t0d4y b34r1ng sh1tty n3w5 r3g4rd1ng y0ur fav0rite ch0c0l4t3 chip c00kie br4nd")
+	}
+	b.ReportAllocs()
+}

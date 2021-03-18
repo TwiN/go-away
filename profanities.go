@@ -66,6 +66,8 @@ var profanities = []string{
 	"pussie",
 	"pussy",
 	"queer",
+	"rape",
+	"rapist",
 	"retard",
 	"rimjob",
 	"scrotum",
