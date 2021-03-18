@@ -28,6 +28,7 @@ var falsePositives = []string{
 	"dickvandyke",
 	"document",
 	"evaluate",
+	"exclusive",
 	"expensive",
 	"expression",
 	"grass",
