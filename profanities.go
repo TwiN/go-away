@@ -80,7 +80,6 @@ var profanities = []string{
 	"tits",
 	"tittie",
 	"titty",
-	"tosser",
 	"turd",
 	"twat",
 	"vagina",

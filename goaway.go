@@ -9,7 +9,11 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-const Space = " "
+const (
+	space              = " "
+	firstRuneSupported = ' '
+	lastRuneSupported  = '~'
+)
 
 var (
 	defaultProfanityDetector *ProfanityDetector
@@ -104,7 +108,7 @@ func (g ProfanityDetector) sanitize(s string) string {
 		s = strings.Replace(s, "?", "", -1)
 		s = strings.Replace(s, "!", "", -1)
 	}
-	s = strings.Replace(s, Space, "", -1)
+	s = strings.Replace(s, space, "", -1)
 	if g.sanitizeAccents {
 		s = removeAccents(s)
 	}
@@ -115,8 +119,14 @@ func removeAccents(s string) string {
 	if removeAccentsTransformer == nil {
 		removeAccentsTransformer = transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
 	}
-	output, _, _ := transform.String(removeAccentsTransformer, s)
-	return output
+	for _, character := range s {
+		// If there's a character outside the range of supported runes, there might be some accented words
+		if character < firstRuneSupported || character > lastRuneSupported {
+			s, _, _ = transform.String(removeAccentsTransformer, s)
+			break
+		}
+	}
+	return s
 }
 
 // IsProfane checks whether there are any profanities in a given string (word or sentence).

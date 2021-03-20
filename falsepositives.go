@@ -4,13 +4,13 @@ package goaway
 var falsePositives = []string{
 	"arsenal",
 	"assassin",
-	"assaying",
+	"assaying", // was saying
 	"assert",
 	"assign",
 	"assimil",
 	"associat",
-	"assum",
-	"assur",
+	"assum", // assuming, assumption, assumed
+	"assur", // assurance
 	"banal",
 	"basement",
 	"bass",
@@ -18,10 +18,8 @@ var falsePositives = []string{
 	"canvass",
 	"carcass",
 	"circum",
-	"class",
 	"clitheroe",
 	"cockburn",
-	"compass",
 	"cumber",
 	"cumbing",
 	"cumulat",
@@ -37,12 +35,12 @@ var falsePositives = []string{
 	"harass",
 	"horniman",
 	"identit",
-	"lass",
+	"lass", // class
 	"libshitz",
 	"magnacumlaude",
 	"mass",
 	"mocha",
-	"pass",
+	"pass", // compass, passion
 	"penistone",
 	"pushit",
 	"sassy",
