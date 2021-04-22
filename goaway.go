@@ -115,6 +115,8 @@ func (g ProfanityDetector) sanitize(s string) string {
 	return s
 }
 
+// removeAccents strips all accents from characters.
+// Only called if ProfanityDetector.removeAccents is set to true
 func removeAccents(s string) string {
 	if removeAccentsTransformer == nil {
 		removeAccentsTransformer = transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
