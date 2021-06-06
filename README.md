@@ -6,6 +6,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/TwinProduction/go-away)](https://goreportcard.com/report/github.com/TwinProduction/go-away)
 [![codecov](https://codecov.io/gh/TwinProduction/go-away/branch/master/graph/badge.svg)](https://codecov.io/gh/TwinProduction/go-away)
 [![Go Reference](https://pkg.go.dev/badge/github.com/TwinProduction/go-away.svg)](https://pkg.go.dev/github.com/TwinProduction/go-away)
+[![Join Discord server](https://img.shields.io/discord/442432928614449155.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/44p4TRep)
 
 go-away is a stand-alone, lightweight library for detecting profanities in Go.
 
