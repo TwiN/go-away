@@ -42,6 +42,7 @@ var falsePositives = []string{
 	"mocha",
 	"pass", // compass, passion
 	"penistone",
+	"phoebe",
 	"pushit",
 	"sassy",
 	"shoe",
