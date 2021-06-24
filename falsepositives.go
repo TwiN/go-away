@@ -14,10 +14,9 @@ var falsePositives = []string{
 	"banal",
 	"basement",
 	"bass",
-	"cass", // cassie, cassandra
+	"cass", // cassie, cassandra, carcass
 	"butthe",
 	"canvass",
-	"carcass",
 	"circum",
 	"clitheroe",
 	"cockburn",
