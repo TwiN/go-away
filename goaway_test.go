@@ -4,10 +4,10 @@ import (
 	"testing"
 )
 
-func TestNoDuplicatesBetweenProfanitiesAndFalseFalsePositives(t *testing.T) {
+func TestNoDuplicatesBetweenProfanitiesAndFalseNegatives(t *testing.T) {
 	for _, profanity := range profanities {
-		for _, falseFalsePositive := range falseNegatives {
-			if profanity == falseFalsePositive {
+		for _, falseNegative := range falseNegatives {
+			if profanity == falseNegative {
 				t.Errorf("'%s' is already in 'falseNegatives', there's no need to have it in 'profanities' too", profanity)
 			}
 		}
@@ -118,6 +118,7 @@ func TestFalsePositives(t *testing.T) {
 		"classification",
 		"passion",
 		"carcass",
+		"cassandra",
 		"just push it down the ledge", // puSH IT
 	}
 	goAway := NewProfanityDetector()
@@ -128,7 +129,7 @@ func TestFalsePositives(t *testing.T) {
 	}
 }
 
-func TestFalseFalsePositives(t *testing.T) {
+func TestFalseNegatives(t *testing.T) {
 	sentences := []string{
 		"dumb ass", // ass -> bASS (FP) -> dumBASS (FFP)
 	}
