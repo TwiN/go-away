@@ -46,7 +46,6 @@ var falsePositives = []string{
 	"pushit",
 	"sassy",
 	"shoe",
-	"scuntthorpe",
 	"scunthorpe",
 	"shitake",
 	"stitch",
