@@ -108,7 +108,7 @@ func TestSentencesWithNoProfanities(t *testing.T) {
 
 func TestFalsePositives(t *testing.T) {
 	sentences := []string{
-		"I am from Scuntthorpe, north Lincolnshire",
+		"I am from Scunthorpe, north Lincolnshire",
 		"He is an associate of mine",
 		"Are you an assassin?",
 		"But the table is on fire",
