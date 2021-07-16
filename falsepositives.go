@@ -38,6 +38,7 @@ var falsePositives = []string{
 	"identit",
 	"lass", // class
 	"libshitz",
+	"leafage",
 	"magnacumlaude",
 	"mass",
 	"mocha",
@@ -51,6 +52,8 @@ var falsePositives = []string{
 	"shitake",
 	"stitch",
 	"sussex",
+	"serfage",
 	"therapist",
 	"tysongay",
+	"wharfage",
 }
