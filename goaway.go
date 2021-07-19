@@ -18,6 +18,7 @@ const (
 var (
 	defaultProfanityDetector *ProfanityDetector
 	removeAccentsTransformer transform.Transformer
+	profanitySet             map[string]bool
 )
 
 // ProfanityDetector
@@ -29,6 +30,12 @@ type ProfanityDetector struct {
 
 // NewProfanityDetector creates a new ProfanityDetector
 func NewProfanityDetector() *ProfanityDetector {
+	if profanitySet == nil {
+		profanitySet = make(map[string]bool)
+		for _, profanity := range profanities {
+			profanitySet[profanity] = true
+		}
+	}
 	return &ProfanityDetector{
 		sanitizeSpecialCharacters: true,
 		sanitizeLeetSpeak:         true,
@@ -61,20 +68,16 @@ func (g *ProfanityDetector) WithSanitizeAccents(sanitize bool) *ProfanityDetecto
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
-	s = g.sanitize(s)
+	words := strings.Split(g.sanitize(s), space)
 	// Check for false false positives
 	for _, word := range falseNegatives {
 		if match := strings.Contains(s, word); match {
 			return true
 		}
 	}
-	// Remove false positives
-	for _, word := range falsePositives {
-		s = strings.Replace(s, word, "", -1)
-	}
 	// Check for profanities
-	for _, word := range profanities {
-		if match := strings.Contains(s, word); match {
+	for _, word := range words {
+		if match := profanitySet[word]; match {
 			return true
 		}
 	}
@@ -107,8 +110,10 @@ func (g ProfanityDetector) sanitize(s string) string {
 		s = strings.Replace(s, "'", "", -1)
 		s = strings.Replace(s, "?", "", -1)
 		s = strings.Replace(s, "!", "", -1)
+		s = strings.Replace(s, ".", "", -1)
+		s = strings.Replace(s, ",", "", -1)
+		s = strings.Replace(s, "\"", "", -1)
 	}
-	s = strings.Replace(s, space, "", -1)
 	if g.sanitizeAccents {
 		s = removeAccents(s)
 	}
