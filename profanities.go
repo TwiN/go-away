@@ -3,7 +3,7 @@ package goaway
 // profanities is a list of profanities that are checked after the falsePositives are removed
 //
 // Note that some words that would normally be in this list may be in falseNegatives
-var profanities = []string{
+var profanitiesList = []string{
 	"anal",
 	"anus",
 	"arse",
@@ -85,4 +85,10 @@ var profanities = []string{
 	"vagina",
 	"wank",
 	"whore",
+}
+
+var profanities := make(map[string]bool)
+
+for profanity := range profanitiesList {
+    profanities[profanity] = true
 }
