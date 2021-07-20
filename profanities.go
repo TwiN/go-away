@@ -1,9 +1,9 @@
 package goaway
 
-// profanities is a list of profanities that are checked after the falsePositives are removed
+// defaultProfanities is a list of defaultProfanities that are checked after the defaultFalsePositives are removed
 //
-// Note that some words that would normally be in this list may be in falseNegatives
-var profanities = []string{
+// Note that some words that would normally be in this list may be in defaultFalseNegatives
+var defaultProfanities = []string{
 	"anal",
 	"anus",
 	"arse",
@@ -40,7 +40,7 @@ var profanities = []string{
 	"fudgepacker",
 	"flange",
 	"gtfo",
-	"hoe", // while that's also a tool, I doubt somebody would be checking for profanities if that tool was relevant
+	"hoe", // while that's also a tool, I doubt somebody would be checking for defaultProfanities if that tool was relevant
 	"horny",
 	"incest",
 	"jerk",

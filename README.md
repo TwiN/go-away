@@ -41,6 +41,20 @@ profanityDetector := goaway.NewProfanityDetector().WithSanitizeLeetSpeak(false).
 profanityDetector.IsProfane("b!tch") // returns false because we're not sanitizing special characters
 ```
 
+By default, the `NewProfanityDetector` constructor uses the default dictionary for load the configuration, that you could see on the next files:
+* profanities.go
+* falsenegatives.go
+* falsepositives.go
+
+If you need to load a different dictionary, you could create a new instance of `ProfanityDetector` on this way:
+
+```
+profanities    := []string{"word1", "word2"}
+falseNegatives := []string{"word"}
+falsePositives := []string{"word1bad", "word2bad"}
+
+profanityDetector := goaway.NewProfanityDetector().WithCustomDictionary(profanities, falseNegatives, falsePositives)
+```
 
 ## In the background
 

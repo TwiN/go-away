@@ -25,14 +25,23 @@ type ProfanityDetector struct {
 	sanitizeSpecialCharacters bool
 	sanitizeLeetSpeak         bool
 	sanitizeAccents           bool
+
+	profanities    []string
+	falseNegatives []string
+	falsePositives []string
 }
 
 // NewProfanityDetector creates a new ProfanityDetector
 func NewProfanityDetector() *ProfanityDetector {
+
 	return &ProfanityDetector{
 		sanitizeSpecialCharacters: true,
 		sanitizeLeetSpeak:         true,
 		sanitizeAccents:           true,
+
+		profanities:    defaultProfanities,
+		falseNegatives: defaultFalseNegatives,
+		falsePositives: defaultFalsePositives,
 	}
 }
 
@@ -58,22 +67,32 @@ func (g *ProfanityDetector) WithSanitizeAccents(sanitize bool) *ProfanityDetecto
 	return g
 }
 
-// IsProfane takes in a string (word or sentence) and look for profanities.
+// WithCustomDictionary allows configuring whether the sanitization process should also take into account
+// custom profanities, false negatives and false positives dictionaries
+func (g *ProfanityDetector) WithCustomDictionary(profanities, falseNegatives, falsePositives []string) *ProfanityDetector {
+	g.profanities = profanities
+	g.falseNegatives = falseNegatives
+	g.falsePositives = falsePositives
+
+	return g
+}
+
+// IsProfane takes in a string (word or sentence) and look for defaultProfanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
 	s = g.sanitize(s)
 	// Check for false false positives
-	for _, word := range falseNegatives {
+	for _, word := range g.falseNegatives {
 		if match := strings.Contains(s, word); match {
 			return true
 		}
 	}
 	// Remove false positives
-	for _, word := range falsePositives {
+	for _, word := range g.falsePositives {
 		s = strings.Replace(s, word, "", -1)
 	}
-	// Check for profanities
-	for _, word := range profanities {
+	// Check for defaultProfanities
+	for _, word := range g.profanities {
 		if match := strings.Contains(s, word); match {
 			return true
 		}
@@ -131,7 +150,7 @@ func removeAccents(s string) string {
 	return s
 }
 
-// IsProfane checks whether there are any profanities in a given string (word or sentence).
+// IsProfane checks whether there are any defaultProfanities in a given string (word or sentence).
 // Uses the default ProfanityDetector
 func IsProfane(s string) bool {
 	if defaultProfanityDetector == nil {
