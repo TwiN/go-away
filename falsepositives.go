@@ -36,6 +36,7 @@ var falsePositives = []string{
 	"horniman",
 	"identit",
 	"lass", // class
+	"leafage",
 	"libshitz",
 	"magnacumlaude",
 	"mass",
@@ -45,6 +46,7 @@ var falsePositives = []string{
 	"phoebe",
 	"pushit",
 	"sassy",
+	"serfage",
 	"shoe",
 	"scunthorpe",
 	"shitake",
@@ -52,4 +54,5 @@ var falsePositives = []string{
 	"sussex",
 	"therapist",
 	"tysongay",
+	"wharfage",
 }
