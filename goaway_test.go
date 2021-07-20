@@ -15,7 +15,7 @@ func TestNoDuplicatesBetweenProfanitiesAndFalseNegatives(t *testing.T) {
 }
 
 func TestBadWords(t *testing.T) {
-	words := []string{"fuck", "ass", "bitch"}
+	words := []string{"2 girls 1 cup", "fuck", "ass", "bitch"}
 	goAway := NewProfanityDetector()
 	for _, w := range words {
 		if !goAway.IsProfane(w) {

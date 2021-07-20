@@ -4,7 +4,6 @@ package goaway
 //
 // Note that some words that would normally be in this list may be in falseNegatives
 var profanities = []string{
-	"2 girls 1 cup",
 	"anal",
 	"arsehole",
 	"ass",
@@ -29,13 +28,10 @@ var profanities = []string{
 	"boooobs",
 	"booooobs",
 	"booooooobs",
-	"brown shower",
-	"brown showers",
 	"bukake",
 	"bukkake",
 	"bullshit",
 	"butthole",
-	"carpet muncher",
 	"cawk",
 	"chink",
 	"clit",

@@ -68,13 +68,13 @@ func (g *ProfanityDetector) WithSanitizeAccents(sanitize bool) *ProfanityDetecto
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
-	words := strings.Split(g.sanitize(s), space)
 	// Check for false false positives
 	for _, word := range falseNegatives {
 		if match := strings.Contains(s, word); match {
 			return true
 		}
 	}
+	words := strings.Split(g.sanitize(s), space)
 	// Check for profanities
 	for _, word := range words {
 		if match := profanitySet[word]; match {
