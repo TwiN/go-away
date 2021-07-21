@@ -21,6 +21,7 @@ var profanities = []string{
 	"boob",
 	"bugger",
 	"butt",
+	"choad",
 	"clitoris",
 	"cock",
 	"coon",
