@@ -150,7 +150,7 @@ func removeAccents(s string) string {
 	return s
 }
 
-// IsProfane checks whether there are any defaultProfanities in a given string (word or sentence).
+// IsProfane checks whether there are any profanities in a given string (word or sentence).
 // Uses the default ProfanityDetector
 func IsProfane(s string) bool {
 	if defaultProfanityDetector == nil {
