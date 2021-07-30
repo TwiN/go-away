@@ -1,7 +1,7 @@
 package goaway
 
-// defaultFalsePositives is a list of words that may wrongly trigger the defaultProfanities
-var defaultFalsePositives = []string{
+// DefaultFalsePositives is a list of words that may wrongly trigger the DefaultProfanities
+var DefaultFalsePositives = []string{
 	"arsenal",
 	"assassin",
 	"assaying", // was saying

@@ -1,9 +1,9 @@
 package goaway
 
-// defaultProfanities is a list of defaultProfanities that are checked after the defaultFalsePositives are removed
+// DefaultProfanities is a list of DefaultProfanities that are checked after the DefaultFalsePositives are removed
 //
-// Note that some words that would normally be in this list may be in defaultFalseNegatives
-var defaultProfanities = []string{
+// Note that some words that would normally be in this list may be in DefaultFalseNegatives
+var DefaultProfanities = []string{
 	"anal",
 	"anus",
 	"arse",
