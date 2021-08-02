@@ -1,6 +1,6 @@
 package goaway
 
-// DefaultFalseNegatives is a list of DefaultProfanities that are checked for before the DefaultFalsePositives are removed
+// DefaultFalseNegatives is a list of profanities that are checked for before the DefaultFalsePositives are removed
 //
 // This is reserved for words that may be incorrectly filtered as false positives.
 //

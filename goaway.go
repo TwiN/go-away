@@ -77,7 +77,7 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falseNegatives, fa
 	return g
 }
 
-// IsProfane takes in a string (word or sentence) and look for DefaultProfanities.
+// IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
 	s = g.sanitize(s)
@@ -91,7 +91,7 @@ func (g *ProfanityDetector) IsProfane(s string) bool {
 	for _, word := range g.falsePositives {
 		s = strings.Replace(s, word, "", -1)
 	}
-	// Check for DefaultProfanities
+	// Check for profanities
 	for _, word := range g.profanities {
 		if match := strings.Contains(s, word); match {
 			return true
