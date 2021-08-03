@@ -20,7 +20,8 @@ var (
 	removeAccentsTransformer transform.Transformer
 )
 
-// ProfanityDetector
+// ProfanityDetector contains the dictionaries as well as the configuration
+// for determining how profanity detection is handled
 type ProfanityDetector struct {
 	sanitizeSpecialCharacters bool
 	sanitizeLeetSpeak         bool
@@ -33,20 +34,17 @@ type ProfanityDetector struct {
 
 // NewProfanityDetector creates a new ProfanityDetector
 func NewProfanityDetector() *ProfanityDetector {
-
 	return &ProfanityDetector{
 		sanitizeSpecialCharacters: true,
 		sanitizeLeetSpeak:         true,
 		sanitizeAccents:           true,
-
-		profanities:    DefaultProfanities,
-		falseNegatives: DefaultFalseNegatives,
-		falsePositives: DefaultFalsePositives,
+		profanities:               DefaultProfanities,
+		falseNegatives:            DefaultFalseNegatives,
+		falsePositives:            DefaultFalsePositives,
 	}
 }
 
-// WithSanitizeLeetSpeak allows configuring whether the sanitization process should also take into account
-// leetspeak
+// WithSanitizeLeetSpeak allows configuring whether the sanitization process should also take into account leetspeak
 func (g *ProfanityDetector) WithSanitizeLeetSpeak(sanitize bool) *ProfanityDetector {
 	g.sanitizeLeetSpeak = sanitize
 	return g
@@ -73,7 +71,6 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falseNegatives, fa
 	g.profanities = profanities
 	g.falseNegatives = falseNegatives
 	g.falsePositives = falsePositives
-
 	return g
 }
 

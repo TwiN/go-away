@@ -17,7 +17,6 @@ func TestNoDuplicatesBetweenProfanitiesAndFalseNegatives(t *testing.T) {
 func TestBadWords(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	words := []string{"fuck", "ass", "poop", "penis", "bitch"}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -31,7 +30,6 @@ func TestBadWords(t *testing.T) {
 			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, w := range words {
@@ -46,7 +44,6 @@ func TestBadWords(t *testing.T) {
 func TestBadWordsWithAccentedLetters(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -77,7 +74,6 @@ func TestBadWordsWithAccentedLetters(t *testing.T) {
 func TestSentencesWithBadWords(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	sentences := []string{"What the fuck is your problem", "Go away, asshole!"}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -91,7 +87,6 @@ func TestSentencesWithBadWords(t *testing.T) {
 			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
@@ -106,7 +101,6 @@ func TestSentencesWithBadWords(t *testing.T) {
 func TestSneakyBadWords(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch", "arse", "shit", "btch"}
 	words := []string{"A$$", "4ss", "4s$", "a S s", "a $ s", "@$$h073", "f    u     c k", "4r5e", "5h1t", "5hit", "a55", "ar5e", "a_s_s", "b!tch", "b!+ch"}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -137,7 +131,6 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 		"You smell p00p",
 		"Go away, a$$h0l3!",
 	}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -151,7 +144,6 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
@@ -165,7 +157,6 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 
 func TestNormalWords(t *testing.T) {
 	words := []string{"hello", "world", "whats", "up"}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -179,7 +170,6 @@ func TestNormalWords(t *testing.T) {
 			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, w := range words {
@@ -234,7 +224,6 @@ func TestFalsePositives(t *testing.T) {
 		"cassandra",
 		"just push it down the ledge", // puSH IT
 	}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -248,7 +237,6 @@ func TestFalsePositives(t *testing.T) {
 			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
@@ -264,7 +252,6 @@ func TestFalseNegatives(t *testing.T) {
 	sentences := []string{
 		"dumb ass", // ass -> bASS (FP) -> dumBASS (FFP)
 	}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -278,7 +265,6 @@ func TestFalseNegatives(t *testing.T) {
 			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
@@ -292,7 +278,6 @@ func TestFalseNegatives(t *testing.T) {
 
 func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
 	sentences := []string{"You are a shitty associate", "Go away, asshole!"}
-
 	tests := []struct {
 		name   string
 		goAway *ProfanityDetector
@@ -306,7 +291,6 @@ func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
 			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
@@ -347,7 +331,6 @@ func TestSentencesFromTheAdventuresOfSherlockHolmes(t *testing.T) {
 		"Within there was a small corridor, which ended in a very massive iron gate.",
 		"We were seated at breakfast one morning, my wife and I, when the maid brought in a telegram. It was from Sherlock Holmes and ran in this way",
 	}
-
 	for _, s := range sentences {
 		if IsProfane(s) {
 			t.Error("Expected false, got false from sentence", s)
