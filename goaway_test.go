@@ -15,7 +15,6 @@ func TestNoDuplicatesBetweenProfanitiesAndFalseNegatives(t *testing.T) {
 }
 
 func TestBadWords(t *testing.T) {
-	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	words := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	tests := []struct {
 		name   string
@@ -27,7 +26,7 @@ func TestBadWords(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary([]string{"fuck", "ass", "poop", "penis", "bitch"}, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -54,7 +53,7 @@ func TestBadWordsWithAccentedLetters(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -84,7 +83,7 @@ func TestSentencesWithBadWords(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -111,7 +110,7 @@ func TestSneakyBadWords(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -141,7 +140,7 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -167,7 +166,7 @@ func TestNormalWords(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -234,7 +233,7 @@ func TestFalsePositives(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -262,7 +261,7 @@ func TestFalseNegatives(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
@@ -288,7 +287,7 @@ func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
 		},
 		{
 			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalseNegatives, DefaultFalsePositives),
+			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
