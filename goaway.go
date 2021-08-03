@@ -39,8 +39,8 @@ func NewProfanityDetector() *ProfanityDetector {
 		sanitizeLeetSpeak:         true,
 		sanitizeAccents:           true,
 		profanities:               DefaultProfanities,
-		falseNegatives:            DefaultFalseNegatives,
 		falsePositives:            DefaultFalsePositives,
+		falseNegatives:            DefaultFalseNegatives,
 	}
 }
 
@@ -66,11 +66,11 @@ func (g *ProfanityDetector) WithSanitizeAccents(sanitize bool) *ProfanityDetecto
 }
 
 // WithCustomDictionary allows configuring whether the sanitization process should also take into account
-// custom profanities, false negatives and false positives dictionaries
-func (g *ProfanityDetector) WithCustomDictionary(profanities, falseNegatives, falsePositives []string) *ProfanityDetector {
+// custom profanities, false positives and false negatives dictionaries.
+func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, falseNegatives []string) *ProfanityDetector {
 	g.profanities = profanities
-	g.falseNegatives = falseNegatives
 	g.falsePositives = falsePositives
+	g.falseNegatives = falseNegatives
 	return g
 }
 

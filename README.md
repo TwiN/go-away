@@ -1,7 +1,6 @@
 ![go-away](/.github/assets/go-away.png)
 
 # go-away
-
 ![build](https://github.com/TwinProduction/go-away/workflows/build/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/TwinProduction/go-away)](https://goreportcard.com/report/github.com/TwinProduction/go-away)
 [![codecov](https://codecov.io/gh/TwinProduction/go-away/branch/master/graph/badge.svg)](https://codecov.io/gh/TwinProduction/go-away)
@@ -14,14 +13,12 @@ This library must remain **extremely** easy to use. Its original intent of not a
 
 
 ## Installation
-
 ```
 go get -u github.com/TwinProduction/go-away
 ```
 
 
 ## Usage
-
 ```go
 import (
 	"github.com/TwinProduction/go-away"
@@ -33,7 +30,7 @@ goaway.IsProfane("@$$h073")                // returns true
 goaway.IsProfane("hello, world!")          // returns false
 ```
 
-By default, `IsProfane` uses a default profanity detector, but if you'd like to disable leet speak,
+By default, `IsProfane` uses the default profanity detector, but if you'd like to disable leet speak,
 numerical character or special character sanitization, you have to create a ProfanityDetector instead:
 
 ```go
@@ -41,23 +38,20 @@ profanityDetector := goaway.NewProfanityDetector().WithSanitizeLeetSpeak(false).
 profanityDetector.IsProfane("b!tch") // returns false because we're not sanitizing special characters
 ```
 
-By default, the `NewProfanityDetector` constructor uses the default dictionary for load the configuration, that you could see on the next files:
-* profanities.go
-* falsenegatives.go
-* falsepositives.go
+By default, the `NewProfanityDetector` constructor uses the default dictionaries for profanities, false positives and false negatives.
+These dictionaries are exposed as `goaway.DefaultProfanities`, `goaway.DefaultFalsePositives` and `goaway.DefaultFalseNegatives` respectively.
 
 If you need to load a different dictionary, you could create a new instance of `ProfanityDetector` on this way:
+```go
+profanities    := []string{"ass"}
+falsePositives := []string{"bass"}
+falseNegatives := []string{"dumbass"}
 
+profanityDetector := goaway.NewProfanityDetector().WithCustomDictionary(profanities, falsePositives, falseNegatives)
 ```
-profanities    := []string{"word1", "word2"}
-falseNegatives := []string{"word"}
-falsePositives := []string{"word1bad", "word2bad"}
 
-profanityDetector := goaway.NewProfanityDetector().WithCustomDictionary(profanities, falseNegatives, falsePositives)
-```
 
 ## In the background
-
 While using a giant regex query to handle everything would be a way of doing it, as more words 
 are added to the list of profanities, that would slow down the filtering considerably.
 
@@ -74,4 +68,4 @@ In the future, the following additional steps could also be considered:
 - All words that have the same character repeated more than twice in a row are removed (e.g. `poooop -> poop`)
   - NOTE: This is obviously not a perfect approach, as words like `fuuck` wouldn't be detected, but it's better than nothing.
   - The upside of this method is that we only need to add base bad words, and not all tenses of said bad word. (e.g. the `fuck` entry would support `fucker`, `fucking`, etc.)
-
+  
