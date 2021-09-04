@@ -222,6 +222,12 @@ func TestFalsePositives(t *testing.T) {
 		"carcass",
 		"cassandra",
 		"just push it down the ledge", // puSH IT
+		"has steph",                   // hAS Steph
+		"was steph",                   // wAS Steph
+		"hot water",                   // hoT WATer
+		"Phoenix",                     // pHOEnix
+		"systems exist",               // systemS EXist
+		"saturday",                    // saTURDay
 	}
 	tests := []struct {
 		name   string

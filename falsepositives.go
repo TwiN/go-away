@@ -33,6 +33,8 @@ var DefaultFalsePositives = []string{
 	"grape",
 	"grass",
 	"harass",
+	"hotwater",
+	"hass",
 	"horniman",
 	"identit",
 	"lass", // class
@@ -44,9 +46,12 @@ var DefaultFalsePositives = []string{
 	"pass", // compass, passion
 	"penistone",
 	"phoebe",
+	"phoenix",
 	"pushit",
 	"sassy",
+	"saturday",
 	"serfage",
+	"sexist", // systems exist, sexist
 	"shoe",
 	"scunthorpe",
 	"shitake",
@@ -54,5 +59,6 @@ var DefaultFalsePositives = []string{
 	"sussex",
 	"therapist",
 	"tysongay",
+	"wass",
 	"wharfage",
 }
