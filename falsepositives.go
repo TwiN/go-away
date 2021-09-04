@@ -33,9 +33,9 @@ var DefaultFalsePositives = []string{
 	"grape",
 	"grass",
 	"harass",
-	"hotwater",
 	"hass",
 	"horniman",
+	"hotwater",
 	"identit",
 	"lass", // class
 	"leafage",
