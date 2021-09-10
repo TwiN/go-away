@@ -1,4 +1,4 @@
-module github.com/TwinProduction/go-away
+module github.com/onthegit/go-away
 
 go 1.16
 

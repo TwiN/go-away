@@ -1,10 +1,10 @@
 ![go-away](/.github/assets/go-away.png)
 
 # go-away
-![build](https://github.com/TwinProduction/go-away/workflows/build/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/TwinProduction/go-away)](https://goreportcard.com/report/github.com/TwinProduction/go-away)
+![build](https://github.com/onthegit/go-away/workflows/build/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/onthegit/go-away)](https://goreportcard.com/report/github.com/onthegit/go-away)
 [![codecov](https://codecov.io/gh/TwinProduction/go-away/branch/master/graph/badge.svg)](https://codecov.io/gh/TwinProduction/go-away)
-[![Go Reference](https://pkg.go.dev/badge/github.com/TwinProduction/go-away.svg)](https://pkg.go.dev/github.com/TwinProduction/go-away)
+[![Go Reference](https://pkg.go.dev/badge/github.com/onthegit/go-away.svg)](https://pkg.go.dev/github.com/onthegit/go-away)
 [![Follow TwinProduction](https://img.shields.io/github/followers/TwinProduction?label=Follow&style=social)](https://github.com/TwinProduction)
 
 go-away is a stand-alone, lightweight library for detecting profanities in Go.
@@ -14,14 +14,14 @@ This library must remain **extremely** easy to use. Its original intent of not a
 
 ## Installation
 ```
-go get -u github.com/TwinProduction/go-away
+go get -u github.com/onthegit/go-away
 ```
 
 
 ## Usage
 ```go
 import (
-	"github.com/TwinProduction/go-away"
+	"github.com/onthegit/go-away"
 )
 
 goaway.IsProfane("fuck this shit")         // returns true
