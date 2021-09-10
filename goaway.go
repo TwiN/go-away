@@ -77,11 +77,17 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, fa
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
+	return (g.IsProfaneString(s) != "")
+}
+
+//IsProfaneString takes in a string (word or sentence) and look for profanities.
+// Returns non-empty string of the first found profanity.
+func (g *ProfanityDetector) IsProfaneString(s string) string {
 	s = g.sanitize(s)
 	// Check for false false positives
 	for _, word := range g.falseNegatives {
 		if match := strings.Contains(s, word); match {
-			return true
+			return word
 		}
 	}
 	// Remove false positives
@@ -91,10 +97,10 @@ func (g *ProfanityDetector) IsProfane(s string) bool {
 	// Check for profanities
 	for _, word := range g.profanities {
 		if match := strings.Contains(s, word); match {
-			return true
+			return word
 		}
 	}
-	return false
+	return ""
 }
 
 func (g ProfanityDetector) sanitize(s string) string {
@@ -150,8 +156,14 @@ func removeAccents(s string) string {
 // IsProfane checks whether there are any profanities in a given string (word or sentence).
 // Uses the default ProfanityDetector
 func IsProfane(s string) bool {
+	return (IsProfaneString(s) != "")
+}
+
+// IsProfaneString checks whether there are any profanities in a given string (word or sentence) and returns the first word that was found.
+// Uses the default ProfanityDetector
+func IsProfaneString(s string) string {
 	if defaultProfanityDetector == nil {
 		defaultProfanityDetector = NewProfanityDetector()
 	}
-	return defaultProfanityDetector.IsProfane(s)
+	return defaultProfanityDetector.IsProfaneString(s)
 }
