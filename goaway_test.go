@@ -35,6 +35,11 @@ func TestBadWords(t *testing.T) {
 				if !tt.goAway.IsProfane(w) {
 					t.Error("Expected true, got false from word", w)
 				}
+				if word, ok := tt.goAway.IsProfaneWord(w); !ok {
+					t.Error("Expected true, got false from word", w)
+				} else if word != w {
+					t.Errorf("Expected %s, got %s", w, word)
+				}
 			}
 		})
 	}
