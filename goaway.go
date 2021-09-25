@@ -77,13 +77,13 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, fa
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
-	_, profane := g.IsProfaneWord(s)
+	_, profane := g.ExtractProfanity(s)
 	return profane
 }
 
-// IsProfane takes in a string (word or sentence) and look for profanities.
+// ExtractProfanity takes in a string (word or sentence) and look for profanities.
 // Returns the first offending word and a boolean
-func (g *ProfanityDetector) IsProfaneWord(s string) (string, bool) {
+func (g *ProfanityDetector) ExtractProfanity(s string) (string, bool) {
 	s = g.sanitize(s)
 	// Check for false false positives
 	for _, word := range g.falseNegatives {
