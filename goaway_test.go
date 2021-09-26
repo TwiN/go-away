@@ -17,25 +17,25 @@ func TestNoDuplicatesBetweenProfanitiesAndFalseNegatives(t *testing.T) {
 func TestBadWords(t *testing.T) {
 	words := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary([]string{"fuck", "ass", "poop", "penis", "bitch"}, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary([]string{"fuck", "ass", "poop", "penis", "bitch"}, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, w := range words {
-				if !tt.goAway.IsProfane(w) {
+				if !tt.profanityDetector.IsProfane(w) {
 					t.Error("Expected true, got false from word", w)
 				}
-				if word, ok := tt.goAway.ExtractProfanity(w); !ok {
+				if word, ok := tt.profanityDetector.ExtractProfanity(w); !ok {
 					t.Error("Expected true, got false from word", w)
 				} else if word != w {
 					t.Errorf("Expected %s, got %s", w, word)
@@ -49,25 +49,25 @@ func TestBadWordsWithAccentedLetters(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, w := range words {
-				if !tt.goAway.WithSanitizeAccents(true).IsProfane(w) {
+				if !tt.profanityDetector.WithSanitizeAccents(true).IsProfane(w) {
 					t.Error("Expected true because sanitizeAccents is set to true, got false from word", w)
 				}
-				if tt.goAway.WithSanitizeAccents(false).IsProfane(w) {
+				if tt.profanityDetector.WithSanitizeAccents(false).IsProfane(w) {
 					t.Error("Expected false because sanitizeAccents is set to false, got true from word", w)
 				}
 			}
@@ -79,22 +79,22 @@ func TestSentencesWithBadWords(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	sentences := []string{"What the fuck is your problem", "Go away, asshole!"}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
-				if !tt.goAway.IsProfane(s) {
+				if !tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected true, got false from sentence", s)
 				}
 			}
@@ -106,22 +106,22 @@ func TestSneakyBadWords(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch", "arse", "shit", "btch"}
 	words := []string{"A$$", "4ss", "4s$", "a S s", "a $ s", "@$$h073", "f    u     c k", "4r5e", "5h1t", "5hit", "a55", "ar5e", "a_s_s", "b!tch", "b!+ch"}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, w := range words {
-				if !tt.goAway.IsProfane(w) {
+				if !tt.profanityDetector.IsProfane(w) {
 					t.Error("Expected true, got false from word", w)
 				}
 			}
@@ -136,22 +136,22 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 		"Go away, a$$h0l3!",
 	}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
-				if !tt.goAway.IsProfane(s) {
+				if !tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected true, got false from sentence", s)
 				}
 			}
@@ -162,22 +162,22 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 func TestNormalWords(t *testing.T) {
 	words := []string{"hello", "world", "whats", "up"}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, w := range words {
-				if tt.goAway.IsProfane(w) {
+				if tt.profanityDetector.IsProfane(w) {
 					t.Error("Expected false, got true from word", w)
 				}
 			}
@@ -235,22 +235,22 @@ func TestFalsePositives(t *testing.T) {
 		"saturday",                    // saTURDay
 	}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
-				if tt.goAway.IsProfane(s) {
+				if tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected false, got true from:", s)
 				}
 			}
@@ -263,22 +263,22 @@ func TestFalseNegatives(t *testing.T) {
 		"dumb ass", // ass -> bASS (FP) -> dumBASS (FFP)
 	}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
-				if !tt.goAway.IsProfane(s) {
+				if !tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected false, got true from:", s)
 				}
 			}
@@ -289,22 +289,22 @@ func TestFalseNegatives(t *testing.T) {
 func TestSentencesWithFalsePositivesAndProfanities(t *testing.T) {
 	sentences := []string{"You are a shitty associate", "Go away, asshole!"}
 	tests := []struct {
-		name   string
-		goAway *ProfanityDetector
+		name              string
+		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:   "With Default Dictionary",
-			goAway: NewProfanityDetector(),
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
 		},
 		{
-			name:   "With Custom Dictionary",
-			goAway: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for _, s := range sentences {
-				if !tt.goAway.IsProfane(s) {
+				if !tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected true, got false from sentence", s)
 				}
 			}
