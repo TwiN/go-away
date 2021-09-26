@@ -4,6 +4,38 @@ import (
 	"testing"
 )
 
+func TestExtractProfanity(t *testing.T) {
+	tests := []struct {
+		input             string
+		expectedProfanity string
+	}{
+		{
+			input:             "fuck this shit",
+			expectedProfanity: "fuck",
+		},
+		{
+			input:             "F   u   C  k th1$ $h!t",
+			expectedProfanity: "fuck",
+		},
+		{
+			input:             "@$$h073",
+			expectedProfanity: "asshole",
+		},
+		{
+			input:             "hello, world!",
+			expectedProfanity: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			profanity := ExtractProfanity(tt.input)
+			if profanity != tt.expectedProfanity {
+				t.Errorf("expected '%s', got '%s'", tt.expectedProfanity, profanity)
+			}
+		})
+	}
+}
+
 func TestNoDuplicatesBetweenProfanitiesAndFalseNegatives(t *testing.T) {
 	for _, profanity := range DefaultProfanities {
 		for _, falseNegative := range DefaultFalseNegatives {
@@ -35,7 +67,7 @@ func TestBadWords(t *testing.T) {
 				if !tt.profanityDetector.IsProfane(w) {
 					t.Error("Expected true, got false from word", w)
 				}
-				if word, ok := tt.profanityDetector.ExtractProfanity(w); !ok {
+				if word := tt.profanityDetector.ExtractProfanity(w); len(word) == 0 {
 					t.Error("Expected true, got false from word", w)
 				} else if word != w {
 					t.Errorf("Expected %s, got %s", w, word)

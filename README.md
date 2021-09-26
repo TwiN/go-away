@@ -24,14 +24,21 @@ import (
 	"github.com/TwinProduction/go-away"
 )
 
-goaway.IsProfane("fuck this shit")         // returns true
-goaway.IsProfane("F   u   C  k th1$ $h!t") // returns true
-goaway.IsProfane("@$$h073")                // returns true
-goaway.IsProfane("hello, world!")          // returns false
+goaway.IsProfane("fuck this shit")                // returns true
+goaway.ExtractProfanity("fuck this shit")         // returns "fuck"
+
+goaway.IsProfane("F   u   C  k th1$ $h!t")        // returns true
+goaway.ExtractProfanity("F   u   C  k th1$ $h!t") // returns "fuck"
+
+goaway.IsProfane("@$$h073")                       // returns true
+goaway.ExtractProfanity("@$$h073")                // returns "asshole"
+
+goaway.IsProfane("hello, world!")                 // returns false
+goaway.ExtractProfanity("hello, world!")          // returns ""
 ```
 
-By default, `IsProfane` uses the default profanity detector, but if you'd like to disable leet speak,
-numerical character or special character sanitization, you have to create a ProfanityDetector instead:
+Calling `goaway.IsProfane` and `goaway.ExtractProfanity` will use the default profanity detector, but if you'd like to 
+disable leet speak, numerical character or special character sanitization, you have to create a ProfanityDetector instead:
 
 ```go
 profanityDetector := goaway.NewProfanityDetector().WithSanitizeLeetSpeak(false).WithSanitizeSpecialCharacters(false).WithSanitizeAccents(false)

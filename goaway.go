@@ -77,18 +77,17 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, fa
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
-	_, profane := g.ExtractProfanity(s)
-	return profane
+	return len(g.ExtractProfanity(s)) > 0
 }
 
 // ExtractProfanity takes in a string (word or sentence) and look for profanities.
-// Returns the first offending word and a boolean
-func (g *ProfanityDetector) ExtractProfanity(s string) (string, bool) {
+// Returns the first profanity found, or an empty string if none are found
+func (g *ProfanityDetector) ExtractProfanity(s string) string {
 	s = g.sanitize(s)
-	// Check for false false positives
+	// Check for false negatives
 	for _, word := range g.falseNegatives {
 		if match := strings.Contains(s, word); match {
-			return word, true
+			return word
 		}
 	}
 	// Remove false positives
@@ -98,10 +97,10 @@ func (g *ProfanityDetector) ExtractProfanity(s string) (string, bool) {
 	// Check for profanities
 	for _, word := range g.profanities {
 		if match := strings.Contains(s, word); match {
-			return word, true
+			return word
 		}
 	}
-	return "", false
+	return ""
 }
 
 func (g ProfanityDetector) sanitize(s string) string {
@@ -155,10 +154,22 @@ func removeAccents(s string) string {
 }
 
 // IsProfane checks whether there are any profanities in a given string (word or sentence).
+//
 // Uses the default ProfanityDetector
 func IsProfane(s string) bool {
 	if defaultProfanityDetector == nil {
 		defaultProfanityDetector = NewProfanityDetector()
 	}
 	return defaultProfanityDetector.IsProfane(s)
+}
+
+// ExtractProfanity takes in a string (word or sentence) and look for profanities.
+// Returns the first profanity found, or an empty string if none are found
+//
+// Uses the default ProfanityDetector
+func ExtractProfanity(s string) string {
+	if defaultProfanityDetector == nil {
+		defaultProfanityDetector = NewProfanityDetector()
+	}
+	return defaultProfanityDetector.ExtractProfanity(s)
 }
