@@ -26,6 +26,7 @@ type ProfanityDetector struct {
 	sanitizeSpecialCharacters bool
 	sanitizeLeetSpeak         bool
 	sanitizeAccents           bool
+	sanitizeSpaces            bool
 
 	profanities    []string
 	falseNegatives []string
@@ -38,6 +39,7 @@ func NewProfanityDetector() *ProfanityDetector {
 		sanitizeSpecialCharacters: true,
 		sanitizeLeetSpeak:         true,
 		sanitizeAccents:           true,
+		sanitizeSpaces:            true,
 		profanities:               DefaultProfanities,
 		falsePositives:            DefaultFalsePositives,
 		falseNegatives:            DefaultFalseNegatives,
@@ -71,6 +73,12 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, fa
 	g.profanities = profanities
 	g.falsePositives = falsePositives
 	g.falseNegatives = falseNegatives
+	return g
+}
+
+// WithSanitizeSpaces allows configuring whether the sanitization process should also take into account spaces
+func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector {
+	g.sanitizeSpaces = sanitize
 	return g
 }
 
@@ -130,7 +138,9 @@ func (g ProfanityDetector) sanitize(s string) string {
 		s = strings.Replace(s, "?", "", -1)
 		s = strings.Replace(s, "!", "", -1)
 	}
-	s = strings.Replace(s, space, "", -1)
+	if g.sanitizeSpaces {
+		s = strings.Replace(s, space, "", -1)
+	}
 	if g.sanitizeAccents {
 		s = removeAccents(s)
 	}

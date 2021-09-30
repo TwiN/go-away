@@ -78,6 +78,35 @@ func TestBadWords(t *testing.T) {
 	}
 }
 
+func TestBadWordsWithSpaces(t *testing.T) {
+	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
+	words := []string{"fu ck", "as s", "po op", "pe ni s", "bit ch"}
+	tests := []struct {
+		name              string
+		profanityDetector *ProfanityDetector
+	}{
+		{
+			name:              "With Default Dictionary",
+			profanityDetector: NewProfanityDetector(),
+		},
+		{
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for _, w := range words {
+				if !tt.profanityDetector.WithSanitizeSpaces(true).IsProfane(w) {
+					t.Error("Expected true because sanitizeSpaces is set to true, got false from word", w)
+				}
+				if tt.profanityDetector.WithSanitizeSpaces(false).IsProfane(w) {
+					t.Error("Expected false because sanitizeSpaces is set to false, got true from word", w)
+				}
+			}
+		})
+	}
+}
 func TestBadWordsWithAccentedLetters(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
