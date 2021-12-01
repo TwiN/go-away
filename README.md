@@ -45,9 +45,9 @@ func main() {
 }
 ```
 
-Calling `goaway.IsProfane` and `goaway.ExtractProfanity` will use the default profanity detector, but if you'd like to 
-disable leet speak, numerical character or special character sanitization, you have to create a ProfanityDetector instead:
-
+Calling `goaway.IsProfane(s)`, `goaway.ExtractProfanity(s)` or `goaway.Censor(s)` will use the default profanity detector,
+but if you'd like to disable leet speak, numerical character or special character sanitization, you have to create a
+ProfanityDetector instead:
 ```go
 profanityDetector := goaway.NewProfanityDetector().WithSanitizeLeetSpeak(false).WithSanitizeSpecialCharacters(false).WithSanitizeAccents(false)
 profanityDetector.IsProfane("b!tch") // returns false because we're not sanitizing special characters
