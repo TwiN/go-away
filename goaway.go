@@ -181,8 +181,9 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 			s = strings.Replace(s, "!", "i", -1)
 			if !rememberOriginalIndexes {
 				// Censor, which is the only function that sets rememberOriginalIndexes to true,
-				// does not support sanitizing '()' into 'o', because it's two characters, and I'm
-				// too sleepy to figure out how to fix it right now.
+				// does not support sanitizing '()' into 'o', because it's converting two characters,
+				// into a single character and that messes up with the character indexes. Unfortunately,
+				// I'm too sleepy to figure out how to fix it right now.
 				s = strings.Replace(s, "()", "o", -1)
 			}
 		} else {
