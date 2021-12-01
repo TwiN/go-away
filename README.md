@@ -7,34 +7,42 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/TwiN/go-away.svg)](https://pkg.go.dev/github.com/TwiN/go-away)
 [![Follow TwiN](https://img.shields.io/github/followers/TwiN?label=Follow&style=social)](https://github.com/TwiN)
 
-go-away is a stand-alone, lightweight library for detecting profanities in Go.
+go-away is a stand-alone, lightweight library for detecting and censoring profanities in Go.
 
 This library must remain **extremely** easy to use. Its original intent of not adding overhead will always remain.
 
 
 ## Installation
-```
+```console
 go get -u github.com/TwiN/go-away
 ```
 
 
 ## Usage
 ```go
+package main
+
 import (
-	"github.com/TwiN/go-away"
+    "github.com/TwiN/go-away"
 )
 
-goaway.IsProfane("fuck this shit")                // returns true
-goaway.ExtractProfanity("fuck this shit")         // returns "fuck"
-
-goaway.IsProfane("F   u   C  k th1$ $h!t")        // returns true
-goaway.ExtractProfanity("F   u   C  k th1$ $h!t") // returns "fuck"
-
-goaway.IsProfane("@$$h073")                       // returns true
-goaway.ExtractProfanity("@$$h073")                // returns "asshole"
-
-goaway.IsProfane("hello, world!")                 // returns false
-goaway.ExtractProfanity("hello, world!")          // returns ""
+func main() {
+    goaway.IsProfane("fuck this shit")                // returns true
+    goaway.ExtractProfanity("fuck this shit")         // returns "fuck"
+    goaway.Censor("fuck this shit")                   // returns "**** this ****"
+    
+    goaway.IsProfane("F   u   C  k th1$ $h!t")        // returns true
+    goaway.ExtractProfanity("F   u   C  k th1$ $h!t") // returns "fuck"
+    goaway.Censor("F   u   C  k th1$ $h!t")           // returns "*   *   *  * th1$ ****"
+    
+    goaway.IsProfane("@$$h073")                       // returns true
+    goaway.ExtractProfanity("@$$h073")                // returns "asshole"
+    goaway.Censor("@$$h073")                          // returns "*******"
+    
+    goaway.IsProfane("hello, world!")                 // returns false
+    goaway.ExtractProfanity("hello, world!")          // returns ""
+    goaway.Censor("hello, world!")                    // returns "hello, world!"
+}
 ```
 
 Calling `goaway.IsProfane` and `goaway.ExtractProfanity` will use the default profanity detector, but if you'd like to 
