@@ -20,6 +20,7 @@ var DefaultFalsePositives = []string{
 	"circum",
 	"clitheroe",
 	"cockburn",
+	"cocktail",
 	"cumber",
 	"cumbing",
 	"cumulat",

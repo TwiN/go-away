@@ -91,7 +91,7 @@ func (g *ProfanityDetector) IsProfane(s string) bool {
 // ExtractProfanity takes in a string (word or sentence) and look for profanities.
 // Returns the first profanity found, or an empty string if none are found
 func (g *ProfanityDetector) ExtractProfanity(s string) string {
-	s = g.sanitize(s)
+	s, _ = g.sanitize(s, false)
 	// Check for false negatives
 	for _, word := range g.falseNegatives {
 		if match := strings.Contains(s, word); match {
@@ -111,7 +111,56 @@ func (g *ProfanityDetector) ExtractProfanity(s string) string {
 	return ""
 }
 
-func (g ProfanityDetector) sanitize(s string) string {
+// Censor takes in a string (word or sentence) and tries to censor all profanities found.
+func (g *ProfanityDetector) Censor(s string) string {
+	censored := s
+	var originalIndexes []int
+	s, originalIndexes = g.sanitize(s, true)
+	// Check for false negatives
+	for _, word := range g.falseNegatives {
+		currentIndex := 0
+		for currentIndex != -1 {
+			if foundIndex := strings.Index(s[currentIndex:], word); foundIndex != -1 {
+				for i := 0; i < len(word); i++ {
+					censored = censored[:originalIndexes[foundIndex+currentIndex+i]] + "*" + censored[originalIndexes[foundIndex+currentIndex+i]+1:]
+				}
+				currentIndex += foundIndex + len(word)
+			} else {
+				break
+			}
+		}
+	}
+	// Remove false positives
+	for _, word := range g.falsePositives {
+		currentIndex := 0
+		for currentIndex != -1 {
+			if foundIndex := strings.Index(s[currentIndex:], word); foundIndex != -1 {
+				originalIndexes = append(originalIndexes[:foundIndex+currentIndex], originalIndexes[foundIndex+len(word):]...)
+				currentIndex += foundIndex + len(word)
+			} else {
+				break
+			}
+		}
+		s = strings.Replace(s, word, "", -1)
+	}
+	// Check for profanities
+	for _, word := range g.profanities {
+		currentIndex := 0
+		for currentIndex != -1 {
+			if foundIndex := strings.Index(s[currentIndex:], word); foundIndex != -1 {
+				for i := 0; i < len(word); i++ {
+					censored = censored[:originalIndexes[foundIndex+currentIndex+i]] + "*" + censored[originalIndexes[foundIndex+currentIndex+i]+1:]
+				}
+				currentIndex += foundIndex + len(word)
+			} else {
+				break
+			}
+		}
+	}
+	return censored
+}
+
+func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (string, []int) {
 	s = strings.ToLower(s)
 	if g.sanitizeLeetSpeak {
 		s = strings.Replace(s, "0", "o", -1)
@@ -129,22 +178,44 @@ func (g ProfanityDetector) sanitize(s string) string {
 			s = strings.Replace(s, "+", "t", -1)
 			s = strings.Replace(s, "$", "s", -1)
 			s = strings.Replace(s, "#", "h", -1)
-			s = strings.Replace(s, "()", "o", -1)
+			s = strings.Replace(s, "!", "i", -1)
+			if !rememberOriginalIndexes {
+				// Censor, which is the only function that sets rememberOriginalIndexes to true,
+				// does not support sanitizing '()' into 'o', because it's converting two characters,
+				// into a single character and that messes up with the character indexes. Unfortunately,
+				// I'm too sleepy to figure out how to fix it right now.
+				s = strings.Replace(s, "()", "o", -1)
+			}
+		} else {
+			s = strings.Replace(s, "@", " ", -1)
+			s = strings.Replace(s, "+", " ", -1)
+			s = strings.Replace(s, "$", " ", -1)
+			s = strings.Replace(s, "#", " ", -1)
+			s = strings.Replace(s, "(", " ", -1)
+			s = strings.Replace(s, ")", " ", -1)
+			s = strings.Replace(s, "!", " ", -1)
 		}
-		s = strings.Replace(s, "_", "", -1)
-		s = strings.Replace(s, "-", "", -1)
-		s = strings.Replace(s, "*", "", -1)
-		s = strings.Replace(s, "'", "", -1)
-		s = strings.Replace(s, "?", "", -1)
-		s = strings.Replace(s, "!", "", -1)
-	}
-	if g.sanitizeSpaces {
-		s = strings.Replace(s, space, "", -1)
+		s = strings.Replace(s, "_", " ", -1)
+		s = strings.Replace(s, "-", " ", -1)
+		s = strings.Replace(s, "*", " ", -1)
+		s = strings.Replace(s, "'", " ", -1)
+		s = strings.Replace(s, "?", " ", -1)
 	}
 	if g.sanitizeAccents {
 		s = removeAccents(s)
 	}
-	return s
+	var originalIndexes []int
+	if rememberOriginalIndexes {
+		for i, c := range s {
+			if c != ' ' {
+				originalIndexes = append(originalIndexes, i)
+			}
+		}
+	}
+	if g.sanitizeSpaces {
+		s = strings.Replace(s, space, "", -1)
+	}
+	return s, originalIndexes
 }
 
 // removeAccents strips all accents from characters.
@@ -182,4 +253,14 @@ func ExtractProfanity(s string) string {
 		defaultProfanityDetector = NewProfanityDetector()
 	}
 	return defaultProfanityDetector.ExtractProfanity(s)
+}
+
+// Censor takes in a string (word or sentence) and tries to censor all profanities found.
+//
+// Uses the default ProfanityDetector
+func Censor(s string) string {
+	if defaultProfanityDetector == nil {
+		defaultProfanityDetector = NewProfanityDetector()
+	}
+	return defaultProfanityDetector.Censor(s)
 }

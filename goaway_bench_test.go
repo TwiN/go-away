@@ -119,3 +119,10 @@ func BenchmarkProfanityDetector_Sanitize(b *testing.B) {
 	}
 	b.ReportAllocs()
 }
+
+func BenchmarkCensor(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Censor("Thundercunt c()ck")
+	}
+	b.ReportAllocs()
+}

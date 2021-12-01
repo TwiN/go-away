@@ -37,6 +37,83 @@ func TestExtractProfanity(t *testing.T) {
 	}
 }
 
+func TestProfanityDetector_Censor(t *testing.T) {
+	defaultProfanityDetector = nil
+	tests := []struct {
+		input                  string
+		expectedCensoredOutput string
+	}{
+		{
+			input:                  "what the fuck",
+			expectedCensoredOutput: "what the ****",
+		},
+		{
+			input:                  "fuck this",
+			expectedCensoredOutput: "**** this",
+		},
+		{
+			input:                  "one penis, two vaginas, three dicks, four sluts, five whores and a flower",
+			expectedCensoredOutput: "one *****, two ******s, three ****s, four ****s, five *****s and a flower",
+		},
+		{
+			input:                  "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
+			expectedCensoredOutput: "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
+		},
+		{
+			input:                  "fuck shit fuck",
+			expectedCensoredOutput: "**** **** ****",
+		},
+		{
+			input:                  "fuckfuck",
+			expectedCensoredOutput: "********",
+		},
+		{
+			input:                  "fuck this shit",
+			expectedCensoredOutput: "**** this ****",
+		},
+		{
+			input:                  "F   u   C  k th1$ $h!t",
+			expectedCensoredOutput: "*   *   *  * th1$ ****",
+		},
+		{
+			input:                  "@$$h073",
+			expectedCensoredOutput: "*******",
+		},
+		{
+			input:                  "hello, world!",
+			expectedCensoredOutput: "hello, world!",
+		},
+		{
+			input:                  "Hey asshole, are y()u an assassin? If not, fuck off.",
+			expectedCensoredOutput: "Hey *******, are y()u an assassin? If not, **** off.",
+		},
+		{
+			input:                  "I am from Scunthorpe, north Lincolnshire",
+			expectedCensoredOutput: "I am from Scunthorpe, north Lincolnshire",
+		},
+		{
+			input:                  "He is an associate of mine",
+			expectedCensoredOutput: "He is an associate of mine",
+		},
+		{
+			input:                  "But the table is on fucking fire",
+			expectedCensoredOutput: "But the table is on ****ing fire",
+		},
+		{
+			input:                  "glass",
+			expectedCensoredOutput: "glass",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			censored := Censor(tt.input)
+			if censored != tt.expectedCensoredOutput {
+				t.Errorf("expected '%s', got '%s'", tt.expectedCensoredOutput, censored)
+			}
+		})
+	}
+}
+
 func TestNoDuplicatesBetweenProfanitiesAndFalseNegatives(t *testing.T) {
 	for _, profanity := range DefaultProfanities {
 		for _, falseNegative := range DefaultFalseNegatives {
@@ -413,7 +490,7 @@ func TestSentencesFromTheAdventuresOfSherlockHolmes(t *testing.T) {
 
 func TestSanitize(t *testing.T) {
 	expectedString := "whatthefuckisyourproblem"
-	sanitizedString := NewProfanityDetector().sanitize("What the fu_ck is y()ur pr0bl3m?")
+	sanitizedString, _ := NewProfanityDetector().sanitize("What the fu_ck is y()ur pr0bl3m?", false)
 	if sanitizedString != expectedString {
 		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
 	}
@@ -421,15 +498,15 @@ func TestSanitize(t *testing.T) {
 
 func TestSanitizeWithoutSanitizingSpecialCharacters(t *testing.T) {
 	expectedString := "whatthefu_ckisy()urproblem?"
-	sanitizedString := NewProfanityDetector().WithSanitizeSpecialCharacters(false).sanitize("What the fu_ck is y()ur pr0bl3m?")
+	sanitizedString, _ := NewProfanityDetector().WithSanitizeSpecialCharacters(false).sanitize("What the fu_ck is y()ur pr0bl3m?", false)
 	if sanitizedString != expectedString {
 		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
 	}
 }
 
 func TestSanitizeWithoutSanitizingLeetSpeak(t *testing.T) {
-	expectedString := "whatthefuckisy()urpr0bl3m"
-	sanitizedString := NewProfanityDetector().WithSanitizeLeetSpeak(false).sanitize("What the fu_ck is y()ur pr0bl3m?")
+	expectedString := "whatthefuckisyurpr0bl3m"
+	sanitizedString, _ := NewProfanityDetector().WithSanitizeLeetSpeak(false).sanitize("What the fu_ck is y()ur pr0bl3m?", false)
 	if sanitizedString != expectedString {
 		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
 	}
