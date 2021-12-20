@@ -10,8 +10,10 @@ func createReplacementMap(runes []rune) map[rune]rune {
 	return specialReplacementMap
 }
 
+// DefaultLeetspeekCharactersReplacement contains list of special character runes that will be turned to special character mapping
 var DefaultSpecialCharacterReplacements = createReplacementMap(DefaultSpecialCharacters)
 
+// DefaultLeetspeekCharactersReplacement contains mapping for leet speak characters mapping. Note that special characters will not be mapped if sanitizeSpecialCharacters is set to false
 var DefaultLeetspeekCharactersReplacement = map[rune]rune{
 	'4': 'a',
 	'$': 's',

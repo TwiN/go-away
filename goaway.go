@@ -86,11 +86,13 @@ func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector
 	return g
 }
 
+// WithSpecialCharacters allows configuring special characters that should be removed before checking for profanities
 func (g *ProfanityDetector) WithSpecialCharacters(specialCharacters []rune) *ProfanityDetector {
 	g.specialCharactersReplacementMap = createReplacementMap(specialCharacters)
 	return g
 }
 
+// WithLeetSpeakReplacements allows configuring custom leet speak replacements
 func (g *ProfanityDetector) WithLeetSpeakReplacements(replacementMap map[rune]rune) *ProfanityDetector {
 	g.leetSpeekReplacementMap = replacementMap
 	return g
