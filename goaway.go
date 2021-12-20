@@ -28,21 +28,25 @@ type ProfanityDetector struct {
 	sanitizeAccents           bool
 	sanitizeSpaces            bool
 
-	profanities    []string
-	falseNegatives []string
-	falsePositives []string
+	profanities                     []string
+	falseNegatives                  []string
+	falsePositives                  []string
+	specialCharactersReplacementMap map[rune]rune
+	leetSpeekReplacementMap         map[rune]rune
 }
 
 // NewProfanityDetector creates a new ProfanityDetector
 func NewProfanityDetector() *ProfanityDetector {
 	return &ProfanityDetector{
-		sanitizeSpecialCharacters: true,
-		sanitizeLeetSpeak:         true,
-		sanitizeAccents:           true,
-		sanitizeSpaces:            true,
-		profanities:               DefaultProfanities,
-		falsePositives:            DefaultFalsePositives,
-		falseNegatives:            DefaultFalseNegatives,
+		sanitizeSpecialCharacters:       true,
+		sanitizeLeetSpeak:               true,
+		sanitizeAccents:                 true,
+		sanitizeSpaces:                  true,
+		profanities:                     DefaultProfanities,
+		falsePositives:                  DefaultFalsePositives,
+		falseNegatives:                  DefaultFalseNegatives,
+		specialCharactersReplacementMap: DefaultSpecialCharacterReplacements,
+		leetSpeekReplacementMap:         DefaultLeetspeekCharactersReplacement,
 	}
 }
 
@@ -79,6 +83,16 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, fa
 // WithSanitizeSpaces allows configuring whether the sanitization process should also take into account spaces
 func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector {
 	g.sanitizeSpaces = sanitize
+	return g
+}
+
+func (g *ProfanityDetector) WithSpecialCharacters(specialCharacters []rune) *ProfanityDetector {
+	g.specialCharactersReplacementMap = createReplacementMap(specialCharacters)
+	return g
+}
+
+func (g *ProfanityDetector) WithLeetSpeakReplacements(replacementMap map[rune]rune) *ProfanityDetector {
+	g.leetSpeekReplacementMap = replacementMap
 	return g
 }
 
@@ -162,45 +176,38 @@ func (g *ProfanityDetector) Censor(s string) string {
 
 func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (string, []int) {
 	s = strings.ToLower(s)
-	if g.sanitizeLeetSpeak {
-		s = strings.Replace(s, "0", "o", -1)
-		s = strings.Replace(s, "1", "i", -1)
-		s = strings.Replace(s, "3", "e", -1)
-		s = strings.Replace(s, "4", "a", -1)
-		s = strings.Replace(s, "5", "s", -1)
-		s = strings.Replace(s, "6", "b", -1)
-		s = strings.Replace(s, "7", "l", -1)
-		s = strings.Replace(s, "8", "b", -1)
+	if g.sanitizeLeetSpeak && !rememberOriginalIndexes && g.sanitizeSpecialCharacters {
+		s = strings.ReplaceAll(s, "()", "o")
 	}
-	if g.sanitizeSpecialCharacters {
+	sb := strings.Builder{}
+	for _, char := range s {
+		replaced := false
 		if g.sanitizeLeetSpeak {
-			s = strings.Replace(s, "@", "a", -1)
-			s = strings.Replace(s, "+", "t", -1)
-			s = strings.Replace(s, "$", "s", -1)
-			s = strings.Replace(s, "#", "h", -1)
-			s = strings.Replace(s, "!", "i", -1)
-			if !rememberOriginalIndexes {
-				// Censor, which is the only function that sets rememberOriginalIndexes to true,
-				// does not support sanitizing '()' into 'o', because it's converting two characters,
-				// into a single character and that messes up with the character indexes. Unfortunately,
-				// I'm too sleepy to figure out how to fix it right now.
-				s = strings.Replace(s, "()", "o", -1)
+
+			_, isSpecialCharacter := g.specialCharactersReplacementMap[char]
+			if !isSpecialCharacter || g.sanitizeSpecialCharacters {
+				repl, found := g.leetSpeekReplacementMap[char]
+				if found {
+					sb.WriteRune(repl)
+					replaced = true
+				}
 			}
-		} else {
-			s = strings.Replace(s, "@", " ", -1)
-			s = strings.Replace(s, "+", " ", -1)
-			s = strings.Replace(s, "$", " ", -1)
-			s = strings.Replace(s, "#", " ", -1)
-			s = strings.Replace(s, "(", " ", -1)
-			s = strings.Replace(s, ")", " ", -1)
-			s = strings.Replace(s, "!", " ", -1)
 		}
-		s = strings.Replace(s, "_", " ", -1)
-		s = strings.Replace(s, "-", " ", -1)
-		s = strings.Replace(s, "*", " ", -1)
-		s = strings.Replace(s, "'", " ", -1)
-		s = strings.Replace(s, "?", " ", -1)
+		if g.sanitizeSpecialCharacters {
+			if !replaced {
+				repl, found := g.specialCharactersReplacementMap[char]
+				if found {
+					sb.WriteRune(repl)
+					replaced = true
+				}
+			}
+		}
+		if !replaced {
+			sb.WriteRune(char)
+		}
 	}
+	s = sb.String()
+
 	if g.sanitizeAccents {
 		s = removeAccents(s)
 	}
