@@ -45,7 +45,7 @@ func NewProfanityDetector() *ProfanityDetector {
 		profanities:                     DefaultProfanities,
 		falsePositives:                  DefaultFalsePositives,
 		falseNegatives:                  DefaultFalseNegatives,
-		specialCharactersReplacementMap: DefaultSpecialCharacterReplacements,
+		specialCharactersReplacementMap: createIgnoreMap(DefaultIgnoredSpecialCharacters),
 		leetSpeekReplacementMap:         DefaultLeetspeekCharactersReplacement,
 	}
 }
@@ -88,7 +88,7 @@ func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector
 
 // WithSpecialCharacters allows configuring special characters that should be removed before checking for profanities
 func (g *ProfanityDetector) WithSpecialCharacters(specialCharacters []rune) *ProfanityDetector {
-	g.specialCharactersReplacementMap = createReplacementMap(specialCharacters)
+	g.specialCharactersReplacementMap = createIgnoreMap(specialCharacters)
 	return g
 }
 
