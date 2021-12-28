@@ -260,13 +260,13 @@ func TestBadWordsWithSpecialCharacters(t *testing.T) {
 		},
 		{
 			name:              "With empty special character mapping",
-			profanityDetector: NewProfanityDetector().WithSpecialCharacters([]rune("")),
+			profanityDetector: NewProfanityDetector().WithIgnoredCharacters([]rune("")),
 			sentence:          "f.u.c.k",
 			result:            false,
 		},
 		{
 			name:              "With custom special character mapping",
-			profanityDetector: NewProfanityDetector().WithSpecialCharacters([]rune(".")),
+			profanityDetector: NewProfanityDetector().WithIgnoredCharacters([]rune(".")),
 			sentence:          "f.u.c.k",
 			result:            true,
 		},

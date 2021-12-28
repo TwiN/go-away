@@ -1,6 +1,6 @@
 package goaway
 
-var DefaultIgnoredSpecialCharacters = []rune("._-?()|~")
+var DefaultIgnoredCharacters = []rune("._-?()|~")
 
 func createIgnoreMap(runes []rune) map[rune]rune {
 	specialReplacementMap := make(map[rune]rune, len(runes))

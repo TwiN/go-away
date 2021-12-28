@@ -28,25 +28,25 @@ type ProfanityDetector struct {
 	sanitizeAccents           bool
 	sanitizeSpaces            bool
 
-	profanities                     []string
-	falseNegatives                  []string
-	falsePositives                  []string
-	specialCharactersReplacementMap map[rune]rune
-	leetSpeekReplacementMap         map[rune]rune
+	profanities              []string
+	falseNegatives           []string
+	falsePositives           []string
+	ignoredSpecialCharacters map[rune]rune
+	leetSpeekReplacementMap  map[rune]rune
 }
 
 // NewProfanityDetector creates a new ProfanityDetector
 func NewProfanityDetector() *ProfanityDetector {
 	return &ProfanityDetector{
-		sanitizeSpecialCharacters:       true,
-		sanitizeLeetSpeak:               true,
-		sanitizeAccents:                 true,
-		sanitizeSpaces:                  true,
-		profanities:                     DefaultProfanities,
-		falsePositives:                  DefaultFalsePositives,
-		falseNegatives:                  DefaultFalseNegatives,
-		specialCharactersReplacementMap: createIgnoreMap(DefaultIgnoredSpecialCharacters),
-		leetSpeekReplacementMap:         DefaultLeetspeekCharactersReplacement,
+		sanitizeSpecialCharacters: true,
+		sanitizeLeetSpeak:         true,
+		sanitizeAccents:           true,
+		sanitizeSpaces:            true,
+		profanities:               DefaultProfanities,
+		falsePositives:            DefaultFalsePositives,
+		falseNegatives:            DefaultFalseNegatives,
+		ignoredSpecialCharacters:  createIgnoreMap(DefaultIgnoredCharacters),
+		leetSpeekReplacementMap:   DefaultLeetspeekCharactersReplacement,
 	}
 }
 
@@ -86,9 +86,9 @@ func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector
 	return g
 }
 
-// WithSpecialCharacters allows configuring special characters that should be removed before checking for profanities
-func (g *ProfanityDetector) WithSpecialCharacters(specialCharacters []rune) *ProfanityDetector {
-	g.specialCharactersReplacementMap = createIgnoreMap(specialCharacters)
+// WithIgnoredCharacters allows configuring special characters that should be removed before checking for profanities
+func (g *ProfanityDetector) WithIgnoredCharacters(ignoredCharacters []rune) *ProfanityDetector {
+	g.ignoredSpecialCharacters = createIgnoreMap(ignoredCharacters)
 	return g
 }
 
@@ -186,7 +186,7 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 		replaced := false
 		if g.sanitizeLeetSpeak {
 
-			_, isSpecialCharacter := g.specialCharactersReplacementMap[char]
+			_, isSpecialCharacter := g.ignoredSpecialCharacters[char]
 			if !isSpecialCharacter || g.sanitizeSpecialCharacters {
 				repl, found := g.leetSpeekReplacementMap[char]
 				if found {
@@ -197,7 +197,7 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 		}
 		if g.sanitizeSpecialCharacters {
 			if !replaced {
-				repl, found := g.specialCharactersReplacementMap[char]
+				repl, found := g.ignoredSpecialCharacters[char]
 				if found {
 					sb.WriteRune(repl)
 					replaced = true

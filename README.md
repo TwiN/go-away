@@ -65,6 +65,13 @@ falseNegatives := []string{"dumbass"}
 profanityDetector := goaway.NewProfanityDetector().WithCustomDictionary(profanities, falsePositives, falseNegatives)
 ```
 
+By defailt characters `.` `_` `-` `?` `(` `)` `|` `~` are stripped from the original string. 
+
+If you want to strip additional (or different) special characters you can override it using
+```go
+goaway.NewProfanityDetector().WithIgnoredCharacters(rune[]("{}:\":<?>"))
+```
+
 
 ## In the background
 While using a giant regex query to handle everything would be a way of doing it, as more words 
@@ -83,4 +90,3 @@ In the future, the following additional steps could also be considered:
 - All words that have the same character repeated more than twice in a row are removed (e.g. `poooop -> poop`)
   - NOTE: This is obviously not a perfect approach, as words like `fuuck` wouldn't be detected, but it's better than nothing.
   - The upside of this method is that we only need to add base bad words, and not all tenses of said bad word. (e.g. the `fuck` entry would support `fucker`, `fucking`, etc.)
-  
