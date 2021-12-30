@@ -65,7 +65,7 @@ falseNegatives := []string{"dumbass"}
 profanityDetector := goaway.NewProfanityDetector().WithCustomDictionary(profanities, falsePositives, falseNegatives)
 ```
 
-By defailt characters `.` `_` `-` `?` `(` `)` `|` `~` are stripped from the original string. 
+By default, the characters `.` `_` `-` `?` `(` `)` `|` `~` are stripped from the original string. 
 
 If you want to strip additional (or different) special characters you can override it using
 ```go
