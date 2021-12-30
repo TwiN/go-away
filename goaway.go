@@ -23,16 +23,16 @@ var (
 // ProfanityDetector contains the dictionaries as well as the configuration
 // for determining how profanity detection is handled
 type ProfanityDetector struct {
-	sanitizeSpecialCharacters bool
-	sanitizeLeetSpeak         bool
+	sanitizeSpecialCharacters bool // Whether to replace characters with the value ' ' in characterReplacements
+	sanitizeLeetSpeak         bool // Whether to replace characters with a non-' ' value in characterReplacements
 	sanitizeAccents           bool
 	sanitizeSpaces            bool
 
-	profanities             []string
-	falseNegatives          []string
-	falsePositives          []string
-	ignoredCharacters       map[rune]rune
-	leetSpeakReplacementMap map[rune]rune
+	profanities    []string
+	falseNegatives []string
+	falsePositives []string
+
+	characterReplacements map[rune]rune
 }
 
 // NewProfanityDetector creates a new ProfanityDetector
@@ -45,22 +45,34 @@ func NewProfanityDetector() *ProfanityDetector {
 		profanities:               DefaultProfanities,
 		falsePositives:            DefaultFalsePositives,
 		falseNegatives:            DefaultFalseNegatives,
-		ignoredCharacters:         createIgnoreMap(DefaultIgnoredCharacters),
-		leetSpeakReplacementMap:   DefaultLeetSpeakCharactersReplacement,
+		characterReplacements:     DefaultCharacterReplacements,
 	}
 }
 
 // WithSanitizeLeetSpeak allows configuring whether the sanitization process should also take into account leetspeak
+//
+// Leetspeak characters are characters to be replaced by non-' ' values in the characterReplacements map.
+// For instance, '4' is replaced by 'a' and '3' is replaced by 'e', which means that "4sshol3" would be
+// sanitized to "asshole", which would be detected as a profanity.
+//
+// By default, this is set to true.
 func (g *ProfanityDetector) WithSanitizeLeetSpeak(sanitize bool) *ProfanityDetector {
 	g.sanitizeLeetSpeak = sanitize
-	return g
+	return g.buildCharacterReplacements()
 }
 
 // WithSanitizeSpecialCharacters allows configuring whether the sanitization process should also take into account
-// special characters
+// special characters.
+//
+// Special characters are characters that are part of the characterReplacements map (DefaultCharacterReplacements by
+// default) and are to be removed during the sanitization step.
+//
+// For instance, "fu_ck" would be sanitized to "fuck", which would be detected as a profanity.
+//
+// By default, this is set to true.
 func (g *ProfanityDetector) WithSanitizeSpecialCharacters(sanitize bool) *ProfanityDetector {
 	g.sanitizeSpecialCharacters = sanitize
-	return g
+	return g.buildCharacterReplacements()
 }
 
 // WithSanitizeAccents allows configuring of whether the sanitization process should also take into account accents.
@@ -68,6 +80,12 @@ func (g *ProfanityDetector) WithSanitizeSpecialCharacters(sanitize bool) *Profan
 // is time-sensitive or if the input doesn't involve accents (i.e. if the input can never contain special characters)
 func (g *ProfanityDetector) WithSanitizeAccents(sanitize bool) *ProfanityDetector {
 	g.sanitizeAccents = sanitize
+	return g
+}
+
+// WithSanitizeSpaces allows configuring whether the sanitization process should also take into account spaces
+func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector {
+	g.sanitizeSpaces = sanitize
 	return g
 }
 
@@ -80,21 +98,14 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, fa
 	return g
 }
 
-// WithSanitizeSpaces allows configuring whether the sanitization process should also take into account spaces
-func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector {
-	g.sanitizeSpaces = sanitize
-	return g
-}
-
-// WithIgnoredCharacters allows configuring characters that should be removed before checking for profanities
-func (g *ProfanityDetector) WithIgnoredCharacters(ignoredCharacters []rune) *ProfanityDetector {
-	g.ignoredCharacters = createIgnoreMap(ignoredCharacters)
-	return g
-}
-
-// WithLeetSpeakReplacements allows configuring custom leet speak replacements
-func (g *ProfanityDetector) WithLeetSpeakReplacements(replacementMap map[rune]rune) *ProfanityDetector {
-	g.leetSpeakReplacementMap = replacementMap
+// WithCustomCharacterReplacements allows configuring characters that to be replaced by other characters.
+//
+// Note that all entries that have the value ' ' are considered as special characters while all entries with a value
+// that is not ' ' are considered as leet speak.
+//
+// Defaults to DefaultCharacterReplacements
+func (g *ProfanityDetector) WithCustomCharacterReplacements(characterReplacements map[rune]rune) *ProfanityDetector {
+	g.characterReplacements = characterReplacements
 	return g
 }
 
@@ -183,27 +194,18 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 	}
 	sb := strings.Builder{}
 	for _, char := range s {
-		replaced := false
-		if g.sanitizeLeetSpeak {
-			if _, isIgnoredCharacter := g.ignoredCharacters[char]; !isIgnoredCharacter || g.sanitizeSpecialCharacters {
-				if replacement, found := g.leetSpeakReplacementMap[char]; found {
-					sb.WriteRune(replacement)
-					replaced = true
-				}
+		if replacement, found := g.characterReplacements[char]; found {
+			if g.sanitizeSpecialCharacters && replacement == ' ' {
+				// If the replacement is a space, and we're sanitizing special characters speak, we replace.
+				sb.WriteRune(replacement)
+				continue
+			} else if g.sanitizeLeetSpeak && replacement != ' ' {
+				// If the replacement isn't a space, and we're sanitizing leet speak, we replace.
+				sb.WriteRune(replacement)
+				continue
 			}
 		}
-		if g.sanitizeSpecialCharacters {
-			if !replaced {
-				replacement, found := g.ignoredCharacters[char]
-				if found {
-					sb.WriteRune(replacement)
-					replaced = true
-				}
-			}
-		}
-		if !replaced {
-			sb.WriteRune(char)
-		}
+		sb.WriteRune(char)
 	}
 	s = sb.String()
 	if g.sanitizeAccents {
@@ -237,6 +239,52 @@ func removeAccents(s string) string {
 		}
 	}
 	return s
+}
+
+// buildCharacterReplacements builds characterReplacements if WithSanitizeLeetSpeak or WithSanitizeSpecialCharacters is
+// called.
+//
+// If this is not called, DefaultCharacterReplacements
+func (g *ProfanityDetector) buildCharacterReplacements() *ProfanityDetector {
+	g.characterReplacements = make(map[rune]rune)
+	if g.sanitizeSpecialCharacters {
+		g.characterReplacements['-'] = ' '
+		g.characterReplacements['_'] = ' '
+		g.characterReplacements['|'] = ' '
+		g.characterReplacements['.'] = ' '
+		g.characterReplacements[','] = ' '
+		g.characterReplacements['('] = ' '
+		g.characterReplacements[')'] = ' '
+		g.characterReplacements['<'] = ' '
+		g.characterReplacements['>'] = ' '
+		g.characterReplacements['"'] = ' '
+		g.characterReplacements['`'] = ' '
+		g.characterReplacements['~'] = ' '
+		g.characterReplacements['*'] = ' '
+		g.characterReplacements['&'] = ' '
+		g.characterReplacements['%'] = ' '
+		g.characterReplacements['$'] = ' '
+		g.characterReplacements['#'] = ' '
+		g.characterReplacements['@'] = ' '
+		g.characterReplacements['!'] = ' '
+		g.characterReplacements['?'] = ' '
+		g.characterReplacements['+'] = ' '
+	}
+	if g.sanitizeLeetSpeak {
+		g.characterReplacements['4'] = 'a'
+		g.characterReplacements['$'] = 's'
+		g.characterReplacements['!'] = 'i'
+		g.characterReplacements['+'] = 't'
+		g.characterReplacements['#'] = 'h'
+		g.characterReplacements['@'] = 'a'
+		g.characterReplacements['0'] = 'o'
+		g.characterReplacements['1'] = 'i'
+		g.characterReplacements['7'] = 'l'
+		g.characterReplacements['3'] = 'e'
+		g.characterReplacements['5'] = 's'
+		g.characterReplacements['<'] = 'c'
+	}
+	return g
 }
 
 // IsProfane checks whether there are any profanities in a given string (word or sentence).

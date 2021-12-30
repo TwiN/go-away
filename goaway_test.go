@@ -245,7 +245,7 @@ func TestSentencesWithBadWords(t *testing.T) {
 	}
 }
 
-func TestBadWordsWithSpecialCharacters(t *testing.T) {
+func TestProfanityDetector_WithCustomCharacterReplacements(t *testing.T) {
 	tests := []struct {
 		name              string
 		profanityDetector *ProfanityDetector
@@ -253,56 +253,50 @@ func TestBadWordsWithSpecialCharacters(t *testing.T) {
 		result            bool
 	}{
 		{
-			name:              "With default special character mapping",
-			profanityDetector: NewProfanityDetector(),
-			sentence:          "f.u.c.k",
-			result:            true,
-		},
-		{
-			name:              "With empty special character mapping",
-			profanityDetector: NewProfanityDetector().WithIgnoredCharacters([]rune("")),
-			sentence:          "f.u.c.k",
-			result:            false,
-		},
-		{
-			name:              "With custom special character mapping",
-			profanityDetector: NewProfanityDetector().WithIgnoredCharacters([]rune(".")),
-			sentence:          "f.u.c.k",
-			result:            true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := tt.profanityDetector.IsProfane(tt.sentence)
-			if got != tt.result {
-				t.Errorf("Expected %v, got %v from sentence %s", tt.result, got, tt.sentence)
-			}
-		})
-	}
-}
-
-func TestCustomLeetspeakMapping(t *testing.T) {
-	tests := []struct {
-		name              string
-		profanityDetector *ProfanityDetector
-		sentence          string
-		result            bool
-	}{
-		{
-			name:              "With default leet speak character mapping",
+			name:              "With default profanity detector",
 			profanityDetector: NewProfanityDetector(),
 			sentence:          "5#1+",
-			result:            true,
+			result:            true, // shit is a profanity
 		},
 		{
-			name:              "With custom special character mapping",
-			profanityDetector: NewProfanityDetector().WithLeetSpeakReplacements(map[rune]rune{'(': 'c'}),
+			name:              "With custom character replacements that has leet speak characters",
+			profanityDetector: NewProfanityDetector().WithCustomCharacterReplacements(map[rune]rune{'(': 'c'}),
 			sentence:          "fu(k",
+			result:            true, // fuck is a profanity
+		},
+		{
+			name:              "With custom character replacements that has leet speak characters with sanitizeLeetSpeak disabled",
+			profanityDetector: NewProfanityDetector().WithCustomCharacterReplacements(map[rune]rune{'(': 'c'}).WithSanitizeLeetSpeak(false),
+			sentence:          "fu(k",
+			result:            false, // fuk isn't a profanity
+		},
+		{
+			name:              "With custom character replacements that has leet speak characters with sanitizeSpecialCharacters disabled",
+			profanityDetector: NewProfanityDetector().WithCustomCharacterReplacements(map[rune]rune{'(': 'c'}).WithSanitizeSpecialCharacters(false),
+			sentence:          "fu(k",
+			result:            false, // fu(k isn't a profanity
+		},
+		{
+			name:              "With custom character replacements that has special characters",
+			profanityDetector: NewProfanityDetector().WithCustomCharacterReplacements(map[rune]rune{'.': ' '}),
+			sentence:          "f.u.c.k",
 			result:            true,
 		},
 		{
-			name:              "With empt special character mapping",
-			profanityDetector: NewProfanityDetector().WithLeetSpeakReplacements(map[rune]rune{}),
+			name:              "With custom character replacements that has special characters with sanitizeLeetSpeak disabled",
+			profanityDetector: NewProfanityDetector().WithCustomCharacterReplacements(map[rune]rune{'.': ' '}).WithSanitizeLeetSpeak(false),
+			sentence:          "f.u.c.k",
+			result:            true, // fuck is a profanity
+		},
+		{
+			name:              "With custom character replacements that has special characters with sanitizeSpecialCharacters disabled",
+			profanityDetector: NewProfanityDetector().WithCustomCharacterReplacements(map[rune]rune{'.': ' '}).WithSanitizeSpecialCharacters(false),
+			sentence:          "f.u.c.k",
+			result:            false, // f.u.c.k isn't a profanity
+		},
+		{
+			name:              "With empty character replacement mapping",
+			profanityDetector: NewProfanityDetector().WithCustomCharacterReplacements(map[rune]rune{}),
 			sentence:          "5#1+",
 			result:            false,
 		},

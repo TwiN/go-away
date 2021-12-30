@@ -65,12 +65,13 @@ falseNegatives := []string{"dumbass"}
 profanityDetector := goaway.NewProfanityDetector().WithCustomDictionary(profanities, falsePositives, falseNegatives)
 ```
 
-By default, the characters `.` `_` `-` `?` `(` `)` `|` `~` are stripped from the original string. 
+You may also specify custom character replacements using `WithCustomCharacterReplacements` on a `ProfanityDetector`.
+By default, this is set to `goaway.DefaultCharacterReplacements`.
 
-If you want to strip additional (or different) special characters you can override it using
-```go
-goaway.NewProfanityDetector().WithIgnoredCharacters(rune[]("{}:\":<?>"))
-```
+Note that all character replacements with a value of `' '` are considered as special characters while all characters
+with a value that is not `' '` are considered to be leetspeak characters. This means that using 
+`profanityDetector.WithSanitizeSpecialCharacters(bool)` and `profanityDetector.WithSanitizeLeetSpeak(bool)` will let you
+toggle which character replacements are executed during the sanitization process.
 
 
 ## In the background
