@@ -28,11 +28,11 @@ type ProfanityDetector struct {
 	sanitizeAccents           bool
 	sanitizeSpaces            bool
 
-	profanities              []string
-	falseNegatives           []string
-	falsePositives           []string
-	ignoredSpecialCharacters map[rune]rune
-	leetSpeekReplacementMap  map[rune]rune
+	profanities             []string
+	falseNegatives          []string
+	falsePositives          []string
+	ignoredCharacters       map[rune]rune
+	leetSpeakReplacementMap map[rune]rune
 }
 
 // NewProfanityDetector creates a new ProfanityDetector
@@ -45,8 +45,8 @@ func NewProfanityDetector() *ProfanityDetector {
 		profanities:               DefaultProfanities,
 		falsePositives:            DefaultFalsePositives,
 		falseNegatives:            DefaultFalseNegatives,
-		ignoredSpecialCharacters:  createIgnoreMap(DefaultIgnoredCharacters),
-		leetSpeekReplacementMap:   DefaultLeetspeekCharactersReplacement,
+		ignoredCharacters:         createIgnoreMap(DefaultIgnoredCharacters),
+		leetSpeakReplacementMap:   DefaultLeetSpeakCharactersReplacement,
 	}
 }
 
@@ -86,15 +86,15 @@ func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector
 	return g
 }
 
-// WithIgnoredCharacters allows configuring special characters that should be removed before checking for profanities
+// WithIgnoredCharacters allows configuring characters that should be removed before checking for profanities
 func (g *ProfanityDetector) WithIgnoredCharacters(ignoredCharacters []rune) *ProfanityDetector {
-	g.ignoredSpecialCharacters = createIgnoreMap(ignoredCharacters)
+	g.ignoredCharacters = createIgnoreMap(ignoredCharacters)
 	return g
 }
 
 // WithLeetSpeakReplacements allows configuring custom leet speak replacements
 func (g *ProfanityDetector) WithLeetSpeakReplacements(replacementMap map[rune]rune) *ProfanityDetector {
-	g.leetSpeekReplacementMap = replacementMap
+	g.leetSpeakReplacementMap = replacementMap
 	return g
 }
 
@@ -185,21 +185,18 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 	for _, char := range s {
 		replaced := false
 		if g.sanitizeLeetSpeak {
-
-			_, isSpecialCharacter := g.ignoredSpecialCharacters[char]
-			if !isSpecialCharacter || g.sanitizeSpecialCharacters {
-				repl, found := g.leetSpeekReplacementMap[char]
-				if found {
-					sb.WriteRune(repl)
+			if _, isIgnoredCharacter := g.ignoredCharacters[char]; !isIgnoredCharacter || g.sanitizeSpecialCharacters {
+				if replacement, found := g.leetSpeakReplacementMap[char]; found {
+					sb.WriteRune(replacement)
 					replaced = true
 				}
 			}
 		}
 		if g.sanitizeSpecialCharacters {
 			if !replaced {
-				repl, found := g.ignoredSpecialCharacters[char]
+				replacement, found := g.ignoredCharacters[char]
 				if found {
-					sb.WriteRune(repl)
+					sb.WriteRune(replacement)
 					replaced = true
 				}
 			}
@@ -209,7 +206,6 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 		}
 	}
 	s = sb.String()
-
 	if g.sanitizeAccents {
 		s = removeAccents(s)
 	}

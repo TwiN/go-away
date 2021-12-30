@@ -10,8 +10,9 @@ func createIgnoreMap(runes []rune) map[rune]rune {
 	return specialReplacementMap
 }
 
-// DefaultLeetspeekCharactersReplacement contains mapping for leet speak characters. Note that special leet speak characters will not be mapped if sanitizeSpecialCharacters is set to false
-var DefaultLeetspeekCharactersReplacement = map[rune]rune{
+// DefaultLeetSpeakCharactersReplacement contains mapping for leet speak characters.
+// Note that special leet speak characters will not be mapped if sanitizeSpecialCharacters is set to false
+var DefaultLeetSpeakCharactersReplacement = map[rune]rune{
 	'4': 'a',
 	'$': 's',
 	'!': 'i',
