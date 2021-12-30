@@ -100,6 +100,10 @@ func TestProfanityDetector_Censor(t *testing.T) {
 			expectedCensoredOutput: "But the table is on ****ing fire",
 		},
 		{
+			input:                  "f.u_ck this s.h-i~t",
+			expectedCensoredOutput: "*.*_** this *.*-*~*",
+		},
+		{
 			input:                  "glass",
 			expectedCensoredOutput: "glass",
 		},
@@ -236,6 +240,78 @@ func TestSentencesWithBadWords(t *testing.T) {
 				if !tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected true, got false from sentence", s)
 				}
+			}
+		})
+	}
+}
+
+func TestBadWordsWithSpecialCharacters(t *testing.T) {
+	tests := []struct {
+		name              string
+		profanityDetector *ProfanityDetector
+		sentence          string
+		result            bool
+	}{
+		{
+			name:              "With default special character mapping",
+			profanityDetector: NewProfanityDetector(),
+			sentence:          "f.u.c.k",
+			result:            true,
+		},
+		{
+			name:              "With empty special character mapping",
+			profanityDetector: NewProfanityDetector().WithIgnoredCharacters([]rune("")),
+			sentence:          "f.u.c.k",
+			result:            false,
+		},
+		{
+			name:              "With custom special character mapping",
+			profanityDetector: NewProfanityDetector().WithIgnoredCharacters([]rune(".")),
+			sentence:          "f.u.c.k",
+			result:            true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.profanityDetector.IsProfane(tt.sentence)
+			if got != tt.result {
+				t.Errorf("Expected %v, got %v from sentence %s", tt.result, got, tt.sentence)
+			}
+		})
+	}
+}
+
+func TestCustomLeetspeakMapping(t *testing.T) {
+	tests := []struct {
+		name              string
+		profanityDetector *ProfanityDetector
+		sentence          string
+		result            bool
+	}{
+		{
+			name:              "With default leet speak character mapping",
+			profanityDetector: NewProfanityDetector(),
+			sentence:          "5#1+",
+			result:            true,
+		},
+		{
+			name:              "With custom special character mapping",
+			profanityDetector: NewProfanityDetector().WithLeetSpeakReplacements(map[rune]rune{'(': 'c'}),
+			sentence:          "fu(k",
+			result:            true,
+		},
+		{
+			name:              "With empt special character mapping",
+			profanityDetector: NewProfanityDetector().WithLeetSpeakReplacements(map[rune]rune{}),
+			sentence:          "5#1+",
+			result:            false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.profanityDetector.IsProfane(tt.sentence)
+			if got != tt.result {
+				t.Errorf("Expected %v, got %v from sentence %s", tt.result, got, tt.sentence)
 			}
 		})
 	}
