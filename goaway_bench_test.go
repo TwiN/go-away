@@ -126,3 +126,12 @@ func BenchmarkCensor(b *testing.B) {
 	}
 	b.ReportAllocs()
 }
+
+func BenchmarkIsProfaneConcurrently(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			IsProfane("aaaaafuckaaaaa")
+		}
+	})
+	b.ReportAllocs()
+}
