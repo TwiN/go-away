@@ -149,26 +149,6 @@ func (g *ProfanityDetector) indexToRune(s string, index int) int {
 	return -1
 }
 
-func (g *ProfanityDetector) takeRunesFromIndex(s string, index int) string {
-	ret := make([]rune, 0)
-	for i, i2 := range []rune(s) {
-		if i >= index {
-			ret = append(ret, i2)
-		}
-	}
-	return string(ret)
-}
-
-func (g *ProfanityDetector) takeRunesToIndex(s string, index int) string {
-	ret := make([]rune, 0)
-	for i, i2 := range []rune(s) {
-		if i < index {
-			ret = append(ret, i2)
-		}
-	}
-	return string(ret)
-}
-
 // Censor takes in a string (word or sentence) and tries to censor all profanities found.
 func (g *ProfanityDetector) Censor(s string) string {
 	censored := []rune(s)
