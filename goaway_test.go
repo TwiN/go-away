@@ -111,6 +111,10 @@ func TestProfanityDetector_Censor(t *testing.T) {
 			input:                  "glass",
 			expectedCensoredOutput: "glass",
 		},
+		{
+			input:                  "ы",
+			expectedCensoredOutput: "ы",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
@@ -216,6 +220,30 @@ func TestBadWordsWithAccentedLetters(t *testing.T) {
 				}
 				if tt.profanityDetector.WithSanitizeAccents(false).IsProfane(w) {
 					t.Error("Expected false because sanitizeAccents is set to false, got true from word", w)
+				}
+			}
+		})
+	}
+}
+
+func TestCensorWithVerySpecialCharacters(t *testing.T) {
+	profanities := []string{"крывавыa"}
+	words := []string{"крывавыa"}
+	expectedOutputs := []string{"********"}
+	tests := []struct {
+		name              string
+		profanityDetector *ProfanityDetector
+	}{
+		{
+			name:              "With Custom Dictionary",
+			profanityDetector: NewProfanityDetector().WithCustomDictionary(profanities, DefaultFalsePositives, DefaultFalseNegatives),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for index, w := range words {
+				if output := tt.profanityDetector.Censor(w); output != expectedOutputs[index] {
+					t.Errorf("Expected %s to return %s, got %s", w, expectedOutputs[index], output)
 				}
 			}
 		})
