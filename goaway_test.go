@@ -100,6 +100,10 @@ func TestProfanityDetector_Censor(t *testing.T) {
 			expectedCensoredOutput: "But the table is on ****ing fire",
 		},
 		{
+			input:                  "““““““““““““But the table is on fucking fire“",
+			expectedCensoredOutput: "““““““““““““But the table is on ****ing fire“",
+		},
+		{
 			input:                  "f.u_ck this s.h-i~t",
 			expectedCensoredOutput: "*.*_** this *.*-*~*",
 		},
