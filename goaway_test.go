@@ -281,6 +281,7 @@ func TestBadWordsWithSpaces(t *testing.T) {
 		})
 	}
 }
+
 func TestBadWordsWithAccentedLetters(t *testing.T) {
 	profanities := []string{"fuck", "ass", "poop", "penis", "bitch"}
 	words := []string{"fučk", "ÄšŚ", "pÓöp", "pÉnìŚ", "bitčh"}
