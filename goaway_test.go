@@ -37,6 +37,91 @@ func TestExtractProfanity(t *testing.T) {
 	}
 }
 
+func TestProfanityDetector_CensorWithoutSanitizeSpaces(t *testing.T) {
+	c := NewProfanityDetector().WithSanitizeSpaces(false)
+	tests := []struct {
+		input                  string
+		expectedCensoredOutput string
+	}{
+		{
+			input:                  "what the fuck",
+			expectedCensoredOutput: "what the ****",
+		},
+		{
+			input:                  "fuck this",
+			expectedCensoredOutput: "**** this",
+		},
+		{
+			input:                  "one penis, two vaginas, three dicks, four sluts, five whores and a flower",
+			expectedCensoredOutput: "one *****, two ******s, three ****s, four ****s, five *****s and a flower",
+		},
+		{
+			input:                  "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
+			expectedCensoredOutput: "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
+		},
+		{
+			input:                  "fuck shit fuck",
+			expectedCensoredOutput: "**** **** ****",
+		},
+		{
+			input:                  "fuckfuck",
+			expectedCensoredOutput: "********",
+		},
+		{
+			input:                  "fuck this shit",
+			expectedCensoredOutput: "**** this ****",
+		},
+		{
+			input:                  "F   u   C  k th1$ $h!t",
+			expectedCensoredOutput: "F   u   C  k th1$ ****",
+		},
+		{
+			input:                  "@$$h073",
+			expectedCensoredOutput: "*******",
+		},
+		{
+			input:                  "hello, world!",
+			expectedCensoredOutput: "hello, world!",
+		},
+		{
+			input:                  "Hey asshole, are y()u an assassin? If not, fuck off.",
+			expectedCensoredOutput: "Hey *******, are y()u an assassin? If not, **** off.",
+		},
+		{
+			input:                  "I am from Scunthorpe, north Lincolnshire",
+			expectedCensoredOutput: "I am from Scunthorpe, north Lincolnshire",
+		},
+		{
+			input:                  "He is an associate of mine",
+			expectedCensoredOutput: "He is an associate of mine",
+		},
+		{
+			input:                  "But the table is on fucking fire",
+			expectedCensoredOutput: "But the table is on ****ing fire",
+		},
+		{
+			input:                  "““““““““““““But the table is on fucking fire“",
+			expectedCensoredOutput: "““““““““““““But the table is on ****ing fire“",
+		},
+		{
+			input:                  "glass",
+			expectedCensoredOutput: "glass",
+		},
+		{
+			input:                  "ы",
+			expectedCensoredOutput: "ы",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			censored := c.Censor(tt.input)
+			if censored != tt.expectedCensoredOutput {
+				t.Errorf("expected '%s', got '%s'", tt.expectedCensoredOutput, censored)
+			}
+		})
+	}
+}
+
 func TestProfanityDetector_Censor(t *testing.T) {
 	defaultProfanityDetector = nil
 	tests := []struct {

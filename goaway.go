@@ -228,7 +228,8 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 	var originalIndexes []int
 	if rememberOriginalIndexes {
 		for i, c := range []rune(s) {
-			if c != ' ' {
+			// If spaces aren't being sanitized, appending to the original indices prevents off-by-one errors later on.
+			if c != ' ' || !g.sanitizeSpaces {
 				originalIndexes = append(originalIndexes, i)
 			}
 		}
