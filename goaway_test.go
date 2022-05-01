@@ -37,187 +37,131 @@ func TestExtractProfanity(t *testing.T) {
 	}
 }
 
-func TestProfanityDetector_CensorWithoutSanitizeSpaces(t *testing.T) {
-	c := NewProfanityDetector().WithSanitizeSpaces(false)
-	tests := []struct {
-		input                  string
-		expectedCensoredOutput string
-	}{
-		{
-			input:                  "what the fuck",
-			expectedCensoredOutput: "what the ****",
-		},
-		{
-			input:                  "fuck this",
-			expectedCensoredOutput: "**** this",
-		},
-		{
-			input:                  "one penis, two vaginas, three dicks, four sluts, five whores and a flower",
-			expectedCensoredOutput: "one *****, two ******s, three ****s, four ****s, five *****s and a flower",
-		},
-		{
-			input:                  "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
-			expectedCensoredOutput: "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
-		},
-		{
-			input:                  "fuck shit fuck",
-			expectedCensoredOutput: "**** **** ****",
-		},
-		{
-			input:                  "fuckfuck",
-			expectedCensoredOutput: "********",
-		},
-		{
-			input:                  "fuck this shit",
-			expectedCensoredOutput: "**** this ****",
-		},
-		{
-			input:                  "F   u   C  k th1$ $h!t",
-			expectedCensoredOutput: "F   u   C  k th1$ ****",
-		},
-		{
-			input:                  "@$$h073",
-			expectedCensoredOutput: "*******",
-		},
-		{
-			input:                  "hello, world!",
-			expectedCensoredOutput: "hello, world!",
-		},
-		{
-			input:                  "Hey asshole, are y()u an assassin? If not, fuck off.",
-			expectedCensoredOutput: "Hey *******, are y()u an assassin? If not, **** off.",
-		},
-		{
-			input:                  "I am from Scunthorpe, north Lincolnshire",
-			expectedCensoredOutput: "I am from Scunthorpe, north Lincolnshire",
-		},
-		{
-			input:                  "He is an associate of mine",
-			expectedCensoredOutput: "He is an associate of mine",
-		},
-		{
-			input:                  "But the table is on fucking fire",
-			expectedCensoredOutput: "But the table is on ****ing fire",
-		},
-		{
-			input:                  "““““““““““““But the table is on fucking fire“",
-			expectedCensoredOutput: "““““““““““““But the table is on ****ing fire“",
-		},
-		{
-			input:                  "glass",
-			expectedCensoredOutput: "glass",
-		},
-		{
-			input:                  "ы",
-			expectedCensoredOutput: "ы",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
-			censored := c.Censor(tt.input)
-			if censored != tt.expectedCensoredOutput {
-				t.Errorf("expected '%s', got '%s'", tt.expectedCensoredOutput, censored)
-			}
-		})
-	}
-}
-
 func TestProfanityDetector_Censor(t *testing.T) {
 	defaultProfanityDetector = nil
+	profanityDetectorWithSanitizeSpaceDisabled := NewProfanityDetector().WithSanitizeSpaces(false)
 	tests := []struct {
-		input                  string
-		expectedCensoredOutput string
+		input                                  string
+		expectedOutput                         string
+		expectedOutputWithoutSpaceSanitization string
 	}{
 		{
-			input:                  "what the fuck",
-			expectedCensoredOutput: "what the ****",
+			input:                                  "what the fuck",
+			expectedOutput:                         "what the ****",
+			expectedOutputWithoutSpaceSanitization: "what the ****",
 		},
 		{
-			input:                  "fuck this",
-			expectedCensoredOutput: "**** this",
+			input:                                  "fuck this",
+			expectedOutput:                         "**** this",
+			expectedOutputWithoutSpaceSanitization: "**** this",
 		},
 		{
-			input:                  "one penis, two vaginas, three dicks, four sluts, five whores and a flower",
-			expectedCensoredOutput: "one *****, two ******s, three ****s, four ****s, five *****s and a flower",
+			input:                                  "one penis, two vaginas, three dicks, four sluts, five whores and a flower",
+			expectedOutput:                         "one *****, two ******s, three ****s, four ****s, five *****s and a flower",
+			expectedOutputWithoutSpaceSanitization: "one *****, two ******s, three ****s, four ****s, five *****s and a flower",
 		},
 		{
-			input:                  "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
-			expectedCensoredOutput: "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
+			input:                                  "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
+			expectedOutput:                         "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
+			expectedOutputWithoutSpaceSanitization: "Censor doesn't support sanitizing '()' into 'o', because it's two characters. Proof: c()ck. Maybe one day I'll have time to fix it.",
 		},
 		{
-			input:                  "fuck shit fuck",
-			expectedCensoredOutput: "**** **** ****",
+			input:                                  "fuck shit fuck",
+			expectedOutput:                         "**** **** ****",
+			expectedOutputWithoutSpaceSanitization: "**** **** ****",
 		},
 		{
-			input:                  "fuckfuck",
-			expectedCensoredOutput: "********",
+			input:                                  "fuckfuck",
+			expectedOutput:                         "********",
+			expectedOutputWithoutSpaceSanitization: "********",
 		},
 		{
-			input:                  "fuck this shit",
-			expectedCensoredOutput: "**** this ****",
+			input:                                  "fuck this shit",
+			expectedOutput:                         "**** this ****",
+			expectedOutputWithoutSpaceSanitization: "**** this ****",
 		},
 		{
-			input:                  "F   u   C  k th1$ $h!t",
-			expectedCensoredOutput: "*   *   *  * th1$ ****",
+			input:                                  "F   u   C  k th1$ $h!t",
+			expectedOutput:                         "*   *   *  * th1$ ****",
+			expectedOutputWithoutSpaceSanitization: "F   u   C  k th1$ ****",
 		},
 		{
-			input:                  "@$$h073",
-			expectedCensoredOutput: "*******",
+			input:                                  "@$$h073",
+			expectedOutput:                         "*******",
+			expectedOutputWithoutSpaceSanitization: "*******",
 		},
 		{
-			input:                  "hello, world!",
-			expectedCensoredOutput: "hello, world!",
+			input:                                  "hello, world!",
+			expectedOutput:                         "hello, world!",
+			expectedOutputWithoutSpaceSanitization: "hello, world!",
 		},
 		{
-			input:                  "Hey asshole, are y()u an assassin? If not, fuck off.",
-			expectedCensoredOutput: "Hey *******, are y()u an assassin? If not, **** off.",
+			input:                                  "Hey asshole, are y()u an assassin? If not, fuck off.",
+			expectedOutput:                         "Hey *******, are y()u an assassin? If not, **** off.",
+			expectedOutputWithoutSpaceSanitization: "Hey *******, are y()u an assassin? If not, **** off.",
 		},
 		{
-			input:                  "I am from Scunthorpe, north Lincolnshire",
-			expectedCensoredOutput: "I am from Scunthorpe, north Lincolnshire",
+			input:                                  "I am from Scunthorpe, north Lincolnshire",
+			expectedOutput:                         "I am from Scunthorpe, north Lincolnshire",
+			expectedOutputWithoutSpaceSanitization: "I am from Scunthorpe, north Lincolnshire",
 		},
 		{
-			input:                  "He is an associate of mine",
-			expectedCensoredOutput: "He is an associate of mine",
+			input:                                  "He is an associate of mine",
+			expectedOutput:                         "He is an associate of mine",
+			expectedOutputWithoutSpaceSanitization: "He is an associate of mine",
 		},
 		{
-			input:                  "But the table is on fucking fire",
-			expectedCensoredOutput: "But the table is on ****ing fire",
+			input:                                  "But the table is on fucking fire",
+			expectedOutput:                         "But the table is on ****ing fire",
+			expectedOutputWithoutSpaceSanitization: "But the table is on ****ing fire",
 		},
 		{
-			input:                  "““““““““““““But the table is on fucking fire“",
-			expectedCensoredOutput: "““““““““““““But the table is on ****ing fire“",
+			input:                                  "““““““““““““But the table is on fucking fire“",
+			expectedOutput:                         "““““““““““““But the table is on ****ing fire“",
+			expectedOutputWithoutSpaceSanitization: "““““““““““““But the table is on ****ing fire“",
 		},
 		{
-			input:                  "f.u_ck this s.h-i~t",
-			expectedCensoredOutput: "*.*_** this *.*-*~*",
+			input:                                  "f.u_ck this s.h-i~t",
+			expectedOutput:                         "*.*_** this *.*-*~*",
+			expectedOutputWithoutSpaceSanitization: "f.u_ck this s.h-i~t", // This is because special characters get replaced with a space, and because we're not sanitizing spaces...
 		},
 		{
-			input:                  "glass",
-			expectedCensoredOutput: "glass",
+			input:                                  "glass",
+			expectedOutput:                         "glass",
+			expectedOutputWithoutSpaceSanitization: "glass",
 		},
 		{
-			input:                  "ы",
-			expectedCensoredOutput: "ы",
+			input:                                  "ы",
+			expectedOutput:                         "ы",
+			expectedOutputWithoutSpaceSanitization: "ы",
 		},
 		{
-			input:                  "documentdocument", // false positives (https://github.com/TwiN/go-away/issues/30)
-			expectedCensoredOutput: "documentdocument",
+			input:                                  "documentdocument", // false positives (https://github.com/TwiN/go-away/issues/30)
+			expectedOutput:                         "documentdocument",
+			expectedOutputWithoutSpaceSanitization: "documentdocument",
 		},
 		{
-			input:                  "dumbassdumbass", // false negatives (https://github.com/TwiN/go-away/issues/30)
-			expectedCensoredOutput: "**************",
+			input:                                  "dumbassdumbass", // false negatives (https://github.com/TwiN/go-away/issues/30)
+			expectedOutput:                         "**************",
+			expectedOutputWithoutSpaceSanitization: "**************",
 		},
 		//{
-		//	input:                  "document fuck document fuck", // FIXME: This is not censored properly
-		//	expectedCensoredOutput: "document **** document ****",
+		//	input:                                  "document fuck document fuck", // FIXME: This is not censored properly
+		//	expectedOutput:                         "document **** document ****",
+		//	expectedOutputWithoutSpaceSanitization: "document **** document ****",
 		//},
 	}
 	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
+		t.Run("default_"+tt.input, func(t *testing.T) {
 			censored := Censor(tt.input)
-			if censored != tt.expectedCensoredOutput {
-				t.Errorf("expected '%s', got '%s'", tt.expectedCensoredOutput, censored)
+			if censored != tt.expectedOutput {
+				t.Errorf("expected '%s', got '%s'", tt.expectedOutput, censored)
+			}
+		})
+		t.Run("no-space-sanitization_"+tt.input, func(t *testing.T) {
+			censored := profanityDetectorWithSanitizeSpaceDisabled.Censor(tt.input)
+			if censored != tt.expectedOutputWithoutSpaceSanitization {
+				t.Errorf("expected '%s', got '%s'", tt.expectedOutputWithoutSpaceSanitization, censored)
 			}
 		})
 	}
