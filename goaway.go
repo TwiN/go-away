@@ -175,7 +175,8 @@ func (g *ProfanityDetector) Censor(s string) string {
 		for currentIndex != -1 {
 			if foundIndex := strings.Index(s[currentIndex:], word); foundIndex != -1 {
 				runeIndex := g.indexToRune(s, currentIndex+foundIndex)
-				originalIndexes = append(originalIndexes[:runeIndex], originalIndexes[runeIndex+len(word):]...)
+				foundRuneIndex := g.indexToRune(s, foundIndex)
+				originalIndexes = append(originalIndexes[:runeIndex], originalIndexes[foundRuneIndex+len(word):]...)
 				currentIndex += foundIndex + len([]rune(word))
 			} else {
 				break

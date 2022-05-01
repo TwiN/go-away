@@ -200,6 +200,18 @@ func TestProfanityDetector_Censor(t *testing.T) {
 			input:                  "ы",
 			expectedCensoredOutput: "ы",
 		},
+		{
+			input:                  "documentdocument", // false positives (https://github.com/TwiN/go-away/issues/30)
+			expectedCensoredOutput: "documentdocument",
+		},
+		{
+			input:                  "dumbassdumbass", // false negatives (https://github.com/TwiN/go-away/issues/30)
+			expectedCensoredOutput: "**************",
+		},
+		//{
+		//	input:                  "document fuck document fuck", // FIXME: This is not censored properly
+		//	expectedCensoredOutput: "document **** document ****",
+		//},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
