@@ -145,11 +145,11 @@ func TestProfanityDetector_Censor(t *testing.T) {
 			expectedOutput:                         "**************",
 			expectedOutputWithoutSpaceSanitization: "**************",
 		},
-		//{
-		//	input:                                  "document fuck document fuck", // FIXME: This is not censored properly
-		//	expectedOutput:                         "document **** document ****",
-		//	expectedOutputWithoutSpaceSanitization: "document **** document ****",
-		//},
+		{
+			input:                                  "document fuck document fuck", // FIXME: This is not censored properly
+			expectedOutput:                         "document **** document ****",
+			expectedOutputWithoutSpaceSanitization: "document **** document ****",
+		},
 	}
 	for _, tt := range tests {
 		t.Run("default_"+tt.input, func(t *testing.T) {
