@@ -56,6 +56,7 @@ var DefaultFalsePositives = []string{
 	"pushit",
 	"sassy",
 	"saturday",
+	"scrap", // scrap, scrape, scraping
 	"serfage",
 	"sexist", // systems exist, sexist
 	"shoe",
