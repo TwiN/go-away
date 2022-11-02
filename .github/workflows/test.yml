@@ -21,6 +21,6 @@ jobs:
       - name: Test
         run: go test -mod vendor ./... -race -coverprofile=coverage.txt -covermode=atomic
       - name: Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.1.1
         with:
           files: ./coverage.txt
