@@ -103,6 +103,7 @@ var profanities = []string{
 	"fannyflaps",
 	"fannyfucker",
 	"fatass",
+	"fck",
 	"fcuk",
 	"fcuker",
 	"fcuking",
