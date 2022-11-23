@@ -184,7 +184,7 @@ func TestBadWords_WithCustomUpperProfanities(t *testing.T) {
 		profanityDetector *ProfanityDetector
 	}{
 		{
-			name:              "With Custom Dictionary",
+			name:              "With Custom Uppper Cased Dictionary",
 			profanityDetector: NewProfanityDetector().WithCustomDictionary([]string{"FUCK", "ASS", "POOP", "PENIS", "BITCH"}, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
