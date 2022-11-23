@@ -121,17 +121,17 @@ func (g *ProfanityDetector) ExtractProfanity(s string) string {
 	s, _ = g.sanitize(s, false)
 	// Check for false negatives
 	for _, word := range g.falseNegatives {
-		if match := strings.Contains(s, word); match {
+		if match := strings.Contains(s, strings.ToLower(word)); match {
 			return word
 		}
 	}
 	// Remove false positives
 	for _, word := range g.falsePositives {
-		s = strings.Replace(s, word, "", -1)
+		s = strings.Replace(s, strings.ToLower(word), "", -1)
 	}
 	// Check for profanities
 	for _, word := range g.profanities {
-		if match := strings.Contains(s, word); match {
+		if match := strings.Contains(s, strings.ToLower(word)); match {
 			return word
 		}
 	}
