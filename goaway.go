@@ -92,10 +92,17 @@ func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector
 // WithCustomDictionary allows configuring whether the sanitization process should also take into account
 // custom profanities, false positives and false negatives dictionaries.
 func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, falseNegatives []string) *ProfanityDetector {
-	g.profanities = profanities
+	g.profanities = formatProfanities(profanities)
 	g.falsePositives = falsePositives
 	g.falseNegatives = falseNegatives
 	return g
+}
+
+func formatProfanities(s []string) []string {
+	for i, word := range s {
+		s[i] = strings.ToLower(word)
+	}
+	return s
 }
 
 // WithCustomCharacterReplacements allows configuring characters that to be replaced by other characters.
@@ -121,17 +128,17 @@ func (g *ProfanityDetector) ExtractProfanity(s string) string {
 	s, _ = g.sanitize(s, false)
 	// Check for false negatives
 	for _, word := range g.falseNegatives {
-		if match := strings.Contains(s, strings.ToLower(word)); match {
+		if match := strings.Contains(s, word); match {
 			return word
 		}
 	}
 	// Remove false positives
 	for _, word := range g.falsePositives {
-		s = strings.Replace(s, strings.ToLower(word), "", -1)
+		s = strings.Replace(s, word, "", -1)
 	}
 	// Check for profanities
 	for _, word := range g.profanities {
-		if match := strings.Contains(s, strings.ToLower(word)); match {
+		if match := strings.Contains(s, word); match {
 			return word
 		}
 	}
