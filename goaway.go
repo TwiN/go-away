@@ -98,13 +98,6 @@ func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, fa
 	return g
 }
 
-func formatProfanities(s []string) []string {
-	for i, word := range s {
-		s[i] = strings.ToLower(word)
-	}
-	return s
-}
-
 // WithCustomCharacterReplacements allows configuring characters that to be replaced by other characters.
 //
 // Note that all entries that have the value ' ' are considered as special characters while all entries with a value
@@ -338,4 +331,12 @@ func Censor(s string) string {
 		defaultProfanityDetector = NewProfanityDetector()
 	}
 	return defaultProfanityDetector.Censor(s)
+}
+
+// formatProfanities formats the profanities to be used in the profanity detector as lowercase strings
+func formatProfanities(s []string) []string {
+	for i, word := range s {
+		s[i] = strings.ToLower(word)
+	}
+	return s
 }
