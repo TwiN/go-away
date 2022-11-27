@@ -2,6 +2,7 @@ package goaway
 
 import (
 	"strings"
+	"sync"
 	"unicode"
 
 	"golang.org/x/text/runes"
@@ -92,9 +93,7 @@ func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector
 // WithCustomDictionary allows configuring whether the sanitization process should also take into account
 // custom profanities, false positives and false negatives dictionaries.
 func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, falseNegatives []string) *ProfanityDetector {
-	g.profanities = formatProfanities(profanities)
-	g.falsePositives = falsePositives
-	g.falseNegatives = falseNegatives
+	g.profanities, g.falsePositives, g.falseNegatives = formatCustomDictionaries(profanities, falsePositives, falseNegatives)
 	return g
 }
 
@@ -333,10 +332,31 @@ func Censor(s string) string {
 	return defaultProfanityDetector.Censor(s)
 }
 
-// formatProfanities formats the profanities to be used in the profanity detector as lowercase strings
-func formatProfanities(s []string) []string {
+// formatCustomDictionary formats the profanities, falsePositives, and falseNegatives to
+// be used in the profanity detector as lowercase strings
+func formatCustomDictionaries(profanities, falsePositives, falseNegatives []string) ([]string, []string, []string) {
+	profanitiesChan := make(chan []string, 1)
+	falsePositivesChan := make(chan []string, 1)
+	falseNegativesChan := make(chan []string, 1)
+
+	var wg sync.WaitGroup
+	wg.Add(3)
+
+	go toLowerSlice(profanities, profanitiesChan, &wg)
+	go toLowerSlice(falsePositives, falsePositivesChan, &wg)
+	go toLowerSlice(falseNegatives, falseNegativesChan, &wg)
+
+	wg.Wait()
+
+	return <-profanitiesChan, <-falsePositivesChan, <-falseNegativesChan
+}
+
+// toLowerSlice converts slice of strings to slice of lowercase strings
+func toLowerSlice(s []string, returnChan chan<- []string, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	for i, word := range s {
 		s[i] = strings.ToLower(word)
 	}
-	return s
+	returnChan <- s
 }
