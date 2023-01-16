@@ -91,6 +91,7 @@ func (g *ProfanityDetector) WithSanitizeSpaces(sanitize bool) *ProfanityDetector
 
 // WithCustomDictionary allows configuring whether the sanitization process should also take into account
 // custom profanities, false positives and false negatives dictionaries.
+// All dictionaries are expected to be lowercased.
 func (g *ProfanityDetector) WithCustomDictionary(profanities, falsePositives, falseNegatives []string) *ProfanityDetector {
 	g.profanities = profanities
 	g.falsePositives = falsePositives
