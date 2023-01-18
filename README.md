@@ -77,7 +77,7 @@ toggle which character replacements are executed during the sanitization process
 Currently, go-away does not support UTF-8. As such, if the strings you are feeding to this library come from unsanitized user input, you
 are advised to filter out all non-ASCII characters.
 
-If you'd like to add support for UTF-8, see #43 and #47.
+If you'd like to add support for UTF-8, see [#43](https://github.com/TwiN/go-away/issues/43) and [#47](https://github.com/TwiN/go-away/issues/47).
 
 
 ## In the background
