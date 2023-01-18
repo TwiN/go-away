@@ -73,6 +73,12 @@ with a value that is not `' '` are considered to be leetspeak characters. This m
 `profanityDetector.WithSanitizeSpecialCharacters(bool)` and `profanityDetector.WithSanitizeLeetSpeak(bool)` will let you
 toggle which character replacements are executed during the sanitization process.
 
+## Limitations
+Currently, go-away does not support UTF-8. As such, if the strings you are feeding to this library come from unsanitized user input, you
+are advised to filter out all non-ASCII characters.
+
+If you'd like to add support for UTF-8, see #43 and #47.
+
 
 ## In the background
 While using a giant regex query to handle everything would be a way of doing it, as more words 
