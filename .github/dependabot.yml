@@ -4,11 +4,9 @@ updates:
     directory: "/"
     labels: ["dependencies"]
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "daily"
   - package-ecosystem: "gomod"
     directory: "/"
     labels: ["dependencies"]
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "daily"
