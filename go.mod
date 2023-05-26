@@ -1,5 +1,5 @@
 module github.com/TwiN/go-away
 
-go 1.19
+go 1.20
 
 require golang.org/x/text v0.9.0
