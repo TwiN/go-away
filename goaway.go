@@ -143,63 +143,63 @@ func (g *ProfanityDetector) indexToRune(s string, index int) int {
 	count := 0
 	for i := range s {
 		if i == index {
-			return count
+			break
 		}
-		count++
+		if i < index {
+			count++
+		}
 	}
-	return -1
+	return count
 }
 
-// Censor takes in a string (word or sentence) and tries to censor all profanities found.
 func (g *ProfanityDetector) Censor(s string) string {
 	censored := []rune(s)
 	var originalIndexes []int
 	s, originalIndexes = g.sanitize(s, true)
-	// Check for false negatives
-	for _, word := range g.falseNegatives {
+	runeWordLength := 0
+
+	g.checkProfanity(&s, &originalIndexes, &censored, g.falseNegatives, &runeWordLength)
+	g.removeFalsePositives(&s, &originalIndexes, &runeWordLength)
+	g.checkProfanity(&s, &originalIndexes, &censored, g.profanities, &runeWordLength)
+
+	return string(censored)
+}
+
+func (g *ProfanityDetector) checkProfanity(s *string, originalIndexes *[]int, censored *[]rune, wordList []string, runeWordLength *int) {
+	for _, word := range wordList {
 		currentIndex := 0
+		*runeWordLength = len([]rune(word))
 		for currentIndex != -1 {
-			if foundIndex := strings.Index(s[currentIndex:], word); foundIndex != -1 {
-				for i := 0; i < len([]rune(word)); i++ {
-					runeIndex := g.indexToRune(string(censored), currentIndex+foundIndex+i)
-					censored[originalIndexes[runeIndex]] = '*'
+			if foundIndex := strings.Index((*s)[currentIndex:], word); foundIndex != -1 {
+				for i := 0; i < *runeWordLength; i++ {
+					runeIndex := g.indexToRune(*s, currentIndex+foundIndex) + i
+					if runeIndex < len(*originalIndexes) {
+						(*censored)[(*originalIndexes)[runeIndex]] = '*'
+					}
 				}
-				currentIndex += foundIndex + len([]rune(word))
+				currentIndex += foundIndex + len([]byte(word))
 			} else {
 				break
 			}
 		}
 	}
-	// Remove false positives
+}
+
+func (g *ProfanityDetector) removeFalsePositives(s *string, originalIndexes *[]int, runeWordLength *int) {
 	for _, word := range g.falsePositives {
 		currentIndex := 0
+		*runeWordLength = len([]rune(word))
 		for currentIndex != -1 {
-			if foundIndex := strings.Index(s[currentIndex:], word); foundIndex != -1 {
-				foundRuneIndex := g.indexToRune(s, foundIndex)
-				originalIndexes = append(originalIndexes[:foundRuneIndex], originalIndexes[foundRuneIndex+len(word):]...)
-				currentIndex += foundIndex + len([]rune(word))
+			if foundIndex := strings.Index((*s)[currentIndex:], word); foundIndex != -1 {
+				foundRuneIndex := g.indexToRune(*s, foundIndex)
+				*originalIndexes = append((*originalIndexes)[:foundRuneIndex], (*originalIndexes)[foundRuneIndex+*runeWordLength:]...)
+				currentIndex += foundIndex + len([]byte(word))
 			} else {
 				break
 			}
 		}
-		s = strings.Replace(s, word, "", -1)
+		*s = strings.Replace(*s, word, "", -1)
 	}
-	// Check for profanities
-	for _, word := range g.profanities {
-		currentIndex := 0
-		for currentIndex != -1 {
-			if foundIndex := strings.Index(s[currentIndex:], word); foundIndex != -1 {
-				for i := 0; i < len([]rune(word)); i++ {
-					runeIndex := g.indexToRune(string(censored), currentIndex+foundIndex+i)
-					censored[originalIndexes[runeIndex]] = '*'
-				}
-				currentIndex += foundIndex + len([]rune(word))
-			} else {
-				break
-			}
-		}
-	}
-	return string(censored)
 }
 
 func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (string, []int) {

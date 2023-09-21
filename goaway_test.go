@@ -655,3 +655,24 @@ func TestSanitizeWithoutSanitizingLeetSpeak(t *testing.T) {
 		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
 	}
 }
+
+func TestDefaultDriver_UTF8(t *testing.T) {
+	detector := NewProfanityDetector().WithCustomDictionary(
+		[]string{"anal", "あほ"}, // profanities
+		[]string{"あほほ"},        // falsePositives
+		[]string{"あほほし"},       // falseNegatives
+	)
+
+	unsanitizedString := "いい加減にしろ あほほし あほほ あほ anal ほ"
+	expectedString := "いい加減にしろ **** あほほ ** **** ほ"
+
+	isProfane := detector.IsProfane(unsanitizedString)
+	if !isProfane {
+		t.Error("Expected false, got false from sentence", unsanitizedString)
+	}
+
+	sanitizedString := detector.Censor(unsanitizedString)
+	if sanitizedString != expectedString {
+		t.Errorf("Expected '%s', got '%s'", expectedString, sanitizedString)
+	}
+}
