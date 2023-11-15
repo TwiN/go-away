@@ -16,7 +16,7 @@ var DefaultFalsePositives = []string{
 	"banal",
 	"basement",
 	"bass",
-	"cass", // cassie, cassandra, carcass
+	"cass",   // cassie, cassandra, carcass
 	"butter", // butter, butterfly
 	"butthe",
 	"canvass",
@@ -43,7 +43,7 @@ var DefaultFalsePositives = []string{
 	"identit",
 	"kassa", // kassandra
 	"kassi", // kassie, kassidy
-	"lass", // class
+	"lass",  // class
 	"leafage",
 	"libshitz",
 	"magnacumlaude",
@@ -65,6 +65,7 @@ var DefaultFalsePositives = []string{
 	"stitch",
 	"sussex",
 	"therapist",
+	"therapeutic",
 	"tysongay",
 	"wass",
 	"wharfage",
