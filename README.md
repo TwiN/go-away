@@ -4,7 +4,7 @@
 
 ![build](https://github.com/TwinProduction/go-away/workflows/build/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/TwinProduction/go-away)](https://goreportcard.com/report/github.com/TwinProduction/go-away)
-[![codecov](https://codecov.io/gh/TwinProduction/go-away/branch/master/graph/badge.svg)](https://codecov.io/gh/TwinProduction/go-away)
+[![codecov](https://codecov.io/gh/TwinProduction/go-away/branch/main/graph/badge.svg)](https://codecov.io/gh/TwinProduction/go-away)
 [![Go Reference](https://pkg.go.dev/badge/github.com/TwinProduction/go-away.svg)](https://pkg.go.dev/github.com/TwinProduction/go-away)
 [![Follow TwinProduction](https://img.shields.io/github/followers/TwinProduction?label=Follow&style=social)](https://github.com/TwinProduction)
 
