@@ -517,7 +517,7 @@ func TestFalsePositives(t *testing.T) {
 		"systems exist",               // systemS EXist
 		"saturday",                    // saTURDay
 		"therapeutic",
-		"button",
+		"press the button",
 	}
 	tests := []struct {
 		name              string
