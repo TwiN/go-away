@@ -19,6 +19,7 @@ var DefaultFalsePositives = []string{
 	"cass",   // cassie, cassandra, carcass
 	"butter", // butter, butterfly
 	"butthe",
+	"button",
 	"canvass",
 	"circum",
 	"clitheroe",
