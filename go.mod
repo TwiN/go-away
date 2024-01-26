@@ -1,4 +1,4 @@
-module github.com/TwiN/go-away
+module github.com/coggsflod/go-away
 
 go 1.20
 
