@@ -42,6 +42,7 @@ var DefaultFalsePositives = []string{
 	"horniman",
 	"hotwater",
 	"identit",
+	"incumbent",
 	"kassa", // kassandra
 	"kassi", // kassie, kassidy
 	"lass",  // class
