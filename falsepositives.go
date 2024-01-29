@@ -11,6 +11,7 @@ var DefaultFalsePositives = []string{
 	"assimil",
 	"assist",
 	"associat",
+	"assortment",
 	"assum", // assuming, assumption, assumed
 	"assur", // assurance
 	"banal",
