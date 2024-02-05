@@ -298,6 +298,7 @@ var DefaultFalsePositives = []string{
         "embarrassingly",
         "embarrassment",
         "embarrassments",
+	"encumber",
         "encumbrance",
         "encumbrances",
         "eridanus",
