@@ -135,3 +135,12 @@ func BenchmarkIsProfaneConcurrently(b *testing.B) {
 	})
 	b.ReportAllocs()
 }
+
+func BenchmarkIsProfaneConcurrently_WithAccents(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			IsProfane("ÄšŚ")
+		}
+	})
+	b.ReportAllocs()
+}
