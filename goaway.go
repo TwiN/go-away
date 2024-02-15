@@ -17,7 +17,6 @@ const (
 
 var (
 	defaultProfanityDetector *ProfanityDetector
-	removeAccentsTransformer transform.Transformer
 )
 
 // ProfanityDetector contains the dictionaries as well as the configuration
@@ -244,9 +243,7 @@ func (g ProfanityDetector) sanitize(s string, rememberOriginalIndexes bool) (str
 // removeAccents strips all accents from characters.
 // Only called if ProfanityDetector.removeAccents is set to true
 func removeAccents(s string) string {
-	if removeAccentsTransformer == nil {
-		removeAccentsTransformer = transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
-	}
+	removeAccentsTransformer := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
 	for _, character := range s {
 		// If there's a character outside the range of supported runes, there might be some accented words
 		if character < firstRuneSupported || character > lastRuneSupported {
