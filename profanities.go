@@ -86,4 +86,5 @@ var DefaultProfanities = []string{
 	"vagina",
 	"wank",
 	"whore",
+	"gyat",
 }
