@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: go test ./... -race -coverprofile=coverage.txt -covermode=atomic
       - name: Codecov
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v4.6.0
         with:
           files: ./coverage.txt
           token: ${{ secrets.CODECOV_TOKEN }}
