@@ -41,6 +41,7 @@ var DefaultProfanities = []string{
 	"fudgepacker",
 	"flange",
 	"gtfo",
+	"gyat",
 	"hoe", // while that's also a tool, I doubt somebody would be checking for profanities if that tool was relevant
 	"horny",
 	"incest",

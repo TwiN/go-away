@@ -150,6 +150,11 @@ func TestProfanityDetector_Censor(t *testing.T) {
 			expectedOutput:                         "document **** document ****",
 			expectedOutputWithoutSpaceSanitization: "document **** document ****",
 		},
+		{
+			input:                                  "Everyone was staring, and someone muttered ‘gyat’ under their breath.",
+			expectedOutput:                         "Everyone was staring, and someone muttered ‘****’ under their breath.",
+			expectedOutputWithoutSpaceSanitization: "Everyone was staring, and someone muttered ‘****’ under their breath.",
+		},
 	}
 	for _, tt := range tests {
 		t.Run("default_"+tt.input, func(t *testing.T) {
