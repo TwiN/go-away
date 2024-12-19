@@ -549,23 +549,29 @@ func TestFalsePositives(t *testing.T) {
 }
 
 func TestExactWord(t *testing.T) {
-	sentences := []string{
+	accept_sentences := []string{
 		"I'm an analyst",
 	}
+	reject_sentences := []string{"Go away, ass."}
 	tests := []struct {
 		name              string
 		profanityDetector *ProfanityDetector
 	}{
 		{
 			name:              "With Empty FalsePositives",
-			profanityDetector: NewProfanityDetector().WithExactWord(true).WithCustomDictionary(DefaultProfanities, nil, nil),
+			profanityDetector: NewProfanityDetector().WithExactWord(true).WithSanitizeSpecialCharacters(true).WithCustomDictionary(DefaultProfanities, nil, nil),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			for _, s := range sentences {
+			for _, s := range accept_sentences {
 				if tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected false, got true from:", s)
+				}
+			}
+			for _, s := range reject_sentences {
+				if !tt.profanityDetector.IsProfane(s) {
+					t.Error("Expected true, got false from:", s)
 				}
 			}
 		})
