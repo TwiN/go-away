@@ -26,6 +26,7 @@ type ProfanityDetector struct {
 	sanitizeLeetSpeak         bool // Whether to replace characters with a non-' ' value in characterReplacements
 	sanitizeAccents           bool
 	sanitizeSpaces            bool
+	exactWord                 bool
 
 	profanities    []string
 	falseNegatives []string
@@ -41,6 +42,7 @@ func NewProfanityDetector() *ProfanityDetector {
 		sanitizeLeetSpeak:         true,
 		sanitizeAccents:           true,
 		sanitizeSpaces:            true,
+		exactWord:                 false,
 		profanities:               DefaultProfanities,
 		falsePositives:            DefaultFalsePositives,
 		falseNegatives:            DefaultFalseNegatives,
@@ -109,6 +111,16 @@ func (g *ProfanityDetector) WithCustomCharacterReplacements(characterReplacement
 	return g
 }
 
+// WithExactWord allows configuring whether the profanity check process should require exact matches or not.
+// Using this reduces false positives and winds up more permissive.
+//
+// Note: this entails also setting WithSanitizeSpaces(false), since without spaces present exact word matching
+// does not make sense.
+func (g *ProfanityDetector) WithExactWord(exactWord bool) *ProfanityDetector {
+	g.exactWord = exactWord
+	return g.WithSanitizeSpaces(false)
+}
+
 // IsProfane takes in a string (word or sentence) and look for profanities.
 // Returns a boolean
 func (g *ProfanityDetector) IsProfane(s string) bool {
@@ -119,6 +131,7 @@ func (g *ProfanityDetector) IsProfane(s string) bool {
 // Returns the first profanity found, or an empty string if none are found
 func (g *ProfanityDetector) ExtractProfanity(s string) string {
 	s, _ = g.sanitize(s, false)
+
 	// Check for false negatives
 	for _, word := range g.falseNegatives {
 		if match := strings.Contains(s, word); match {
@@ -129,13 +142,32 @@ func (g *ProfanityDetector) ExtractProfanity(s string) string {
 	for _, word := range g.falsePositives {
 		s = strings.Replace(s, word, "", -1)
 	}
-	// Check for profanities
-	for _, word := range g.profanities {
-		if match := strings.Contains(s, word); match {
-			return word
+
+	if !g.exactWord {
+		// Check for profanities
+		for _, word := range g.profanities {
+			if match := strings.Contains(s, word); match {
+				return word
+			}
+		}
+	} else {
+		tokens := strings.Split(s, space)
+		for _, token := range tokens {
+			if sliceContains(g.profanities, token) {
+				return token
+			}
 		}
 	}
 	return ""
+}
+
+func sliceContains(words []string, s string) bool {
+	for _, word := range words {
+		if strings.EqualFold(s, word) {
+			return true
+		}
+	}
+	return false
 }
 
 func (g *ProfanityDetector) indexToRune(s string, index int) int {
