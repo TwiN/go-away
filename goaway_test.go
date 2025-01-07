@@ -549,10 +549,10 @@ func TestFalsePositives(t *testing.T) {
 }
 
 func TestExactWord(t *testing.T) {
-	accept_sentences := []string{
+	acceptSentences := []string{
 		"I'm an analyst",
 	}
-	reject_sentences := []string{"Go away, ass."}
+	rejectSentences := []string{"Go away, ass."}
 	tests := []struct {
 		name              string
 		profanityDetector *ProfanityDetector
@@ -564,12 +564,12 @@ func TestExactWord(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			for _, s := range accept_sentences {
+			for _, s := range acceptSentences {
 				if tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected false, got true from:", s)
 				}
 			}
-			for _, s := range reject_sentences {
+			for _, s := range rejectSentences {
 				if !tt.profanityDetector.IsProfane(s) {
 					t.Error("Expected true, got false from:", s)
 				}
@@ -596,7 +596,7 @@ func TestFalseNegatives(t *testing.T) {
 		},
 		{
 			name:              "With Custom Dictionary",
-			profanityDetector: NewProfanityDetector().WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
+			profanityDetector: NewProfanityDetector().WithExactWord(true).WithCustomDictionary(DefaultProfanities, DefaultFalsePositives, DefaultFalseNegatives),
 		},
 	}
 	for _, tt := range tests {
