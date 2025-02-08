@@ -1,3 +1,4 @@
+comment: false
 coverage:
   status:
     patch: off
@@ -5,4 +6,3 @@ coverage:
       default:
         target: 75%
         threshold: null
-
