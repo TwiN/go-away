@@ -2,4 +2,4 @@ module github.com/TwiN/go-away
 
 go 1.23.6
 
-require golang.org/x/text v0.23.0
+require golang.org/x/text v0.24.0
