@@ -52,6 +52,11 @@ ProfanityDetector instead:
 profanityDetector := goaway.NewProfanityDetector().WithSanitizeLeetSpeak(false).WithSanitizeSpecialCharacters(false).WithSanitizeAccents(false)
 profanityDetector.IsProfane("b!tch") // returns false because we're not sanitizing special characters
 ```
+You can also disable the default behavior of white space sanitization like so:
+```go
+profanityDetector := goaway.NewProfanityDetector().WithSanitizeSpaces(false)
+profanityDetector.IsProfane("sh it") // returns false because we're not sanitizing white spaces
+```
 
 By default, the `NewProfanityDetector` constructor uses the default dictionaries for profanities, false positives and false negatives.
 These dictionaries are exposed as `goaway.DefaultProfanities`, `goaway.DefaultFalsePositives` and `goaway.DefaultFalseNegatives` respectively.
