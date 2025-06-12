@@ -52,9 +52,11 @@ var DefaultFalsePositives = []string{
 	"mocha",
 	"pass", // compass, passion
 	"penistone",
+	"peacock",
 	"phoebe",
 	"phoenix",
 	"pushit",
+	"raccoon",
 	"sassy",
 	"saturday",
 	"scrap", // scrap, scrape, scraping
