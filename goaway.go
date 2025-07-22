@@ -143,18 +143,18 @@ func (g *ProfanityDetector) ExtractProfanity(s string) string {
 		s = strings.Replace(s, word, "", -1)
 	}
 
-	if !g.exactWord {
-		// Check for profanities
-		for _, word := range g.profanities {
-			if match := strings.Contains(s, word); match {
-				return word
-			}
-		}
-	} else {
+	if g.exactWord {
 		tokens := strings.Split(s, space)
 		for _, token := range tokens {
 			if sliceContains(g.profanities, token) {
 				return token
+			}
+		}
+	} else {
+		// Check for profanities
+		for _, word := range g.profanities {
+			if match := strings.Contains(s, word); match {
+				return word
 			}
 		}
 	}
