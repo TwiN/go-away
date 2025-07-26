@@ -42,6 +42,13 @@ func main() {
     goaway.IsProfane("hello, world!")                 // returns false
     goaway.ExtractProfanity("hello, world!")          // returns ""
     goaway.Censor("hello, world!")                    // returns "hello, world!"
+
+    buf := &bytes.Buffer{}
+    detector := goaway.NewProfanityDetector()
+    writer := goaway.NewWriter(buf, detector)
+    writer.Write([]byte("fuck this shit"))
+    writer.Flush()
+    print(buf.String())                               // returns "**** this ****"  
 }
 ```
 
