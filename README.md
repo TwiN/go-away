@@ -57,6 +57,12 @@ You can also disable the default behavior of white space sanitization like so:
 profanityDetector := goaway.NewProfanityDetector().WithSanitizeSpaces(false)
 profanityDetector.IsProfane("sh it") // returns false because we're not sanitizing white spaces
 ```
+You can also require stricter matching by enabling `WithExactWord`:
+```go
+profanityDetector := NewProfanityDetector().WithExactWord(true).WithSanitizeSpecialCharacters(true)
+profanityDetector.IsProfane("analyst") // returns false because we match the exact word
+profanityDetector.IsProfane("anal") // returns true
+```
 
 By default, the `NewProfanityDetector` constructor uses the default dictionaries for profanities, false positives and false negatives.
 These dictionaries are exposed as `goaway.DefaultProfanities`, `goaway.DefaultFalsePositives` and `goaway.DefaultFalseNegatives` respectively.
