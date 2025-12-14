@@ -161,6 +161,48 @@ func (g *ProfanityDetector) ExtractProfanity(s string) string {
 	return ""
 }
 
+// ExtractAllProfanities takes in a string (word or sentence) and looks for profanities.
+// Returns all profanities found as a slice of strings, or an empty slice if none are found.
+// Duplicates are removed from the result.
+func (g *ProfanityDetector) ExtractAllProfanities(s string) []string {
+	s, _ = g.sanitize(s, false)
+	profanitiesFound := make(map[string]bool)
+
+	// Check for false negatives
+	for _, word := range g.falseNegatives {
+		if match := strings.Contains(s, word); match {
+			profanitiesFound[word] = true
+		}
+	}
+	// Remove false positives
+	for _, word := range g.falsePositives {
+		s = strings.Replace(s, word, "", -1)
+	}
+
+	if g.exactWord {
+		tokens := strings.Split(s, space)
+		for _, token := range tokens {
+			if sliceContains(g.profanities, token) {
+				profanitiesFound[token] = true
+			}
+		}
+	} else {
+		// Check for profanities
+		for _, word := range g.profanities {
+			if match := strings.Contains(s, word); match {
+				profanitiesFound[word] = true
+			}
+		}
+	}
+
+	// Convert map to slice
+	result := make([]string, 0, len(profanitiesFound))
+	for word := range profanitiesFound {
+		result = append(result, word)
+	}
+	return result
+}
+
 func sliceContains(words []string, s string) bool {
 	for _, word := range words {
 		if strings.EqualFold(s, word) {
@@ -351,6 +393,18 @@ func ExtractProfanity(s string) string {
 		defaultProfanityDetector = NewProfanityDetector()
 	}
 	return defaultProfanityDetector.ExtractProfanity(s)
+}
+
+// ExtractAllProfanities takes in a string (word or sentence) and looks for profanities.
+// Returns all profanities found as a slice of strings, or an empty slice if none are found.
+// Duplicates are removed from the result.
+//
+// Uses the default ProfanityDetector
+func ExtractAllProfanities(s string) []string {
+	if defaultProfanityDetector == nil {
+		defaultProfanityDetector = NewProfanityDetector()
+	}
+	return defaultProfanityDetector.ExtractAllProfanities(s)
 }
 
 // Censor takes in a string (word or sentence) and tries to censor all profanities found.

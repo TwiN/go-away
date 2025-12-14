@@ -29,18 +29,22 @@ import (
 func main() {
     goaway.IsProfane("fuck this shit")                // returns true
     goaway.ExtractProfanity("fuck this shit")         // returns "fuck"
+    goaway.ExtractAllProfanities("fuck this shit")    // returns ["fuck", "shit"]
     goaway.Censor("fuck this shit")                   // returns "**** this ****"
     
     goaway.IsProfane("F   u   C  k th1$ $h!t")        // returns true
     goaway.ExtractProfanity("F   u   C  k th1$ $h!t") // returns "fuck"
+    goaway.ExtractAllProfanities("F   u   C  k th1$ $h!t") // returns ["fuck", "shit"]
     goaway.Censor("F   u   C  k th1$ $h!t")           // returns "*   *   *  * th1$ ****"
     
     goaway.IsProfane("@$$h073")                       // returns true
     goaway.ExtractProfanity("@$$h073")                // returns "asshole"
+    goaway.ExtractAllProfanities("@$$h073")           // returns ["ass", "asshole"]
     goaway.Censor("@$$h073")                          // returns "*******"
     
     goaway.IsProfane("hello, world!")                 // returns false
     goaway.ExtractProfanity("hello, world!")          // returns ""
+    goaway.ExtractAllProfanities("hello, world!")     // returns []
     goaway.Censor("hello, world!")                    // returns "hello, world!"
 
     buf := &bytes.Buffer{}
@@ -52,12 +56,13 @@ func main() {
 }
 ```
 
-Calling `goaway.IsProfane(s)`, `goaway.ExtractProfanity(s)` or `goaway.Censor(s)` will use the default profanity detector,
+Calling `goaway.IsProfane(s)`, `goaway.ExtractProfanity(s)`, `goaway.ExtractAllProfanities(s)` or `goaway.Censor(s)` will use the default profanity detector,
 but if you'd like to disable leet speak, numerical character or special character sanitization, you have to create a
 ProfanityDetector instead:
 ```go
 profanityDetector := goaway.NewProfanityDetector().WithSanitizeLeetSpeak(false).WithSanitizeSpecialCharacters(false).WithSanitizeAccents(false)
 profanityDetector.IsProfane("b!tch") // returns false because we're not sanitizing special characters
+profanityDetector.ExtractAllProfanities("fuck this shit") // returns ["fuck", "shit"]
 ```
 You can also disable the default behavior of white space sanitization like so:
 ```go

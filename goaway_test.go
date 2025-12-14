@@ -1,6 +1,7 @@
 package goaway
 
 import (
+	"sort"
 	"testing"
 )
 
@@ -35,6 +36,102 @@ func TestExtractProfanity(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestExtractAllProfanities(t *testing.T) {
+	defaultProfanityDetector = nil
+	tests := []struct {
+		input               string
+		expectedProfanities []string
+	}{
+		{
+			input:               "fuck this shit",
+			expectedProfanities: []string{"fuck", "shit"},
+		},
+		{
+			input:               "F   u   C  k th1$ $h!t",
+			expectedProfanities: []string{"fuck", "shit"},
+		},
+		{
+			input:               "@$$h073",
+			expectedProfanities: []string{"ass", "asshole"},
+		},
+		{
+			input:               "hello, world!",
+			expectedProfanities: []string{},
+		},
+		{
+			input:               "fuck shit fuck",
+			expectedProfanities: []string{"fuck", "shit"},
+		},
+		{
+			input:               "one penis, two vaginas, three dicks",
+			expectedProfanities: []string{"penis", "vagina", "dick"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			profanities := ExtractAllProfanities(tt.input)
+			if !equalStringSlices(profanities, tt.expectedProfanities) {
+				t.Errorf("expected %v, got %v", tt.expectedProfanities, profanities)
+			}
+		})
+	}
+}
+
+func TestProfanityDetector_ExtractAllProfanities(t *testing.T) {
+	tests := []struct {
+		name                string
+		detector            *ProfanityDetector
+		input               string
+		expectedProfanities []string
+	}{
+		{
+			name:                "with exact word matching",
+			detector:            NewProfanityDetector().WithExactWord(true),
+			input:               "fuck shit",
+			expectedProfanities: []string{"fuck", "shit"},
+		},
+		{
+			name:                "with exact word matching - no match for substring",
+			detector:            NewProfanityDetector().WithExactWord(true),
+			input:               "fuckthis",
+			expectedProfanities: []string{},
+		},
+		{
+			name:                "without exact word matching - matches substring",
+			detector:            NewProfanityDetector().WithExactWord(false),
+			input:               "fuckthis",
+			expectedProfanities: []string{"fuck"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			profanities := tt.detector.ExtractAllProfanities(tt.input)
+			if !equalStringSlices(profanities, tt.expectedProfanities) {
+				t.Errorf("expected %v, got %v", tt.expectedProfanities, profanities)
+			}
+		})
+	}
+}
+
+// equalStringSlices checks if two string slices contain the same elements (order doesn't matter)
+func equalStringSlices(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	aCopy := make([]string, len(a))
+	bCopy := make([]string, len(b))
+	copy(aCopy, a)
+	copy(bCopy, b)
+	sort.Strings(aCopy)
+	sort.Strings(bCopy)
+	for i := range aCopy {
+		if aCopy[i] != bCopy[i] {
+			return false
+		}
+	}
+	return true
 }
 
 func TestProfanityDetector_Censor(t *testing.T) {
