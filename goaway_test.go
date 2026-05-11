@@ -523,6 +523,10 @@ func TestFalsePositives(t *testing.T) {
 		"saturday",                    // saTURDay
 		"therapeutic",
 		"press the button",
+		"I can use that",
+		"There was an assault yesterday",
+		"Get into the server via ssh",
+		"His name is tassilo",
 	}
 	tests := []struct {
 		name              string
