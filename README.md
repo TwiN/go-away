@@ -3,7 +3,6 @@
 # go-away
 ![test](https://github.com/TwiN/go-away/workflows/test/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/TwiN/go-away)](https://goreportcard.com/report/github.com/TwiN/go-away)
-[![codecov](https://codecov.io/gh/TwiN/go-away/branch/master/graph/badge.svg)](https://codecov.io/gh/TwiN/go-away)
 [![Go Reference](https://pkg.go.dev/badge/github.com/TwiN/go-away.svg)](https://pkg.go.dev/github.com/TwiN/go-away)
 [![Follow TwiN](https://img.shields.io/github/followers/TwiN?label=Follow&style=social)](https://github.com/TwiN)
 
