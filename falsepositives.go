@@ -5,6 +5,7 @@ var DefaultFalsePositives = []string{
 	"analy", // analysis, analytics
 	"arsenal",
 	"assassin",
+	"assault",
 	"assaying", // was saying
 	"assert",
 	"assign",
@@ -16,6 +17,7 @@ var DefaultFalsePositives = []string{
 	"banal",
 	"basement",
 	"bass",
+	"canuse", // can use
 	"cass",   // cassie, cassandra, carcass
 	"butter", // butter, butterfly
 	"butthe",
@@ -67,9 +69,11 @@ var DefaultFalsePositives = []string{
 	"shitake",
 	"stitch",
 	"sussex",
+	"tassi",
 	"therapist",
 	"therapeutic",
 	"tysongay",
+	"viassh", // via ssh
 	"wass",
 	"wharfage",
 }
