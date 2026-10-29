@@ -3,6 +3,9 @@ package goaway
 import "io"
 
 func NewWriter(base io.Writer, detector *ProfanityDetector) *Writer {
+	if detector == nil {
+		detector = NewProfanityDetector()
+	}
 	return &Writer{
 		base:     base,
 		detector: detector,
@@ -31,7 +34,7 @@ func (w *Writer) Write(payload []byte) (int, error) {
 		w.buf = w.buf[:0]
 		last = i + 1
 	}
-	w.buf = payload[last:]
+	w.buf = append(w.buf, payload[last:]...)
 	return len(payload), nil
 }
 
