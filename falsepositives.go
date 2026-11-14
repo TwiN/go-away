@@ -4,6 +4,7 @@ package goaway
 var DefaultFalsePositives = []string{
 	"analy", // analysis, analytics
 	"arsenal",
+	"assault",
 	"assassin",
 	"assaying", // was saying
 	"assert",

@@ -448,7 +448,7 @@ func TestSentencesWithSneakyBadWords(t *testing.T) {
 }
 
 func TestNormalWords(t *testing.T) {
-	words := []string{"hello", "world", "whats", "up"}
+	words := []string{"hello", "world", "whats", "up", "assault"}
 	tests := []struct {
 		name              string
 		profanityDetector *ProfanityDetector
